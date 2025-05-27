@@ -1,175 +1,22 @@
 name: Generate JUnit Tests
 
 on:
-  pull_request: # Trigger on pull request events
-    types: [opened, reopened] # Specifically when a PR is opened or reopened
-    branches:
-      - main # Target branch for the pull request
-    paths: # Add this section to filter by file paths
-      - 'src/main/java/**/*.java' # Only trigger if Java files in src/main/java are changed
+  pull_request:
+    paths:
+      - '**/*.java'
 
 jobs:
-  generate-and-pr-junits:
+  generate-tests:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0 # Fetch all history to compare with previous commit
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.x' # Use a recent Python version
-
-      - name: Install dependencies
-        run: pip install requests # Install requests library for API calls
-
-      - name: Identify changed Java files and generate tests
-        id: generate_tests
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }} # Changed secret name to OPENAI_API_KEY
+      - uses: actions/checkout@v3
+      - name: Run test generator script
         run: |
-          # Configure Git for the action
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # Create a new branch for the generated tests
-          BRANCH_NAME="feature/auto-generated-junits-$(date +%Y%m%d%H%M%S)"
-          git checkout -b "$BRANCH_NAME"
-
-          # Get the list of added or modified Java files in src/main/java since the last commit
-          # Using HEAD~1 to compare with the previous commit
-          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep 'src/main/java/.*\.java$')
-
-          if [ -z "$CHANGED_FILES" ]; then
-            echo "No new or modified Java files found in src/main/java. Exiting."
-            echo "::set-output name=pr_created::false"
-            exit 0
-          fi
-
-          echo "Found changed files: $CHANGED_FILES"
-
-          GENERATED_FILES_COUNT=0
-
-          for FILE_PATH in $CHANGED_FILES; do
-            echo "Processing file: $FILE_PATH"
-            FILE_CONTENT=$(cat "$FILE_PATH")
-
-            # Create a temporary file for the content
-            TEMP_FILE_CONTENT=$(mktemp)
-            echo "$FILE_CONTENT" > "$TEMP_FILE_CONTENT"
-
-            # Extract package and class name for test file path
-            RELATIVE_PATH_WITHOUT_SRC_MAIN_JAVA=$(echo "$FILE_PATH" | sed 's|^src/main/java/||')
-            TEST_FILE_PATH="src/test/java/${RELATIVE_PATH_WITHOUT_SRC_MAIN_JAVA%.java}Test.java"
-            TEST_DIR=$(dirname "$TEST_FILE_PATH")
-
-            mkdir -p "$TEST_DIR" # Create directory for the test file
-
-            # Python script to call LLM and generate test code
-            python -c "
-import requests
-import json
-import os
-import sys
-
-# Read file content from the temporary file passed as the first argument
-with open(sys.argv[1], 'r') as f:
-    file_content = f.read()
-
-test_file_path = sys.argv[2] # Test file path passed as the second argument
-api_key = os.environ.get('OPENAI_API_KEY')
-
-if not api_key:
-    print('Error: OPENAI_API_KEY is not set.')
-    exit(1)
-
-prompt = f'''
-You are an expert Java developer and a test automation engineer.
-Generate comprehensive JUnit 5 unit tests for the following Java code.
-Focus on testing public methods, constructors, and important logic.
-Include appropriate assertions and consider edge cases.
-Ensure the test class has the correct package declaration based on the test file path: {test_file_path}.
-Do not include any explanations or extra text, only the Java code for the JUnit test class.
-
-Java Code to test:
-```java
-{file_content}
-```
-'''
-
-headers = {
-    'Content-Type': 'application/json',
-    'Authorization': f'Bearer {api_key}' # Authorization header for OpenAI API
-}
-payload = {
-    'model': 'gpt-3.5-turbo', # Specify the OpenAI model (can be changed to gpt-4 etc.)
-    'messages': [
-        {'role': 'user', 'content': prompt}
-    ],
-    'temperature': 0.7 # Adjust temperature for creativity/determinism
-}
-
-try:
-    response = requests.post(
-        'https://api.openai.com/v1/chat/completions', # OpenAI Chat Completions API endpoint
-        headers=headers,
-        data=json.dumps(payload)
-    )
-    response.raise_for_status() # Raise an exception for HTTP errors
-    result = response.json()
-
-    if result and 'choices' in result and result['choices']:
-        generated_text = result['choices'][0]['message']['content'] # Extracting content from OpenAI response
-        # Clean up common LLM code block formatting if present
-        if generated_text.startswith('```java') and generated_text.endswith('```'):
-            generated_text = generated_text[len('```java'):-len('```')].strip()
-
-        with open(test_file_path, 'w') as f:
-            f.write(generated_text)
-        print(f'Successfully generated and saved test for {FILE_PATH} to {test_file_path}') # Use FILE_PATH for logging
-    else:
-        print(f'Warning: No test content generated for {FILE_PATH}.')
-
-except requests.exceptions.RequestException as e:
-    print(f'Error calling OpenAI API: {e}')
-    print(f'Response content: {response.text if response else "N/A"}')
-    exit(1) # Exit with error if API call fails
-            " "$TEMP_FILE_CONTENT" "$TEST_FILE_PATH" # Pass temp file path and test file path as arguments
-            rm "$TEMP_FILE_CONTENT" # Clean up temporary file
-
-            if [ -f "$TEST_FILE_PATH" ]; then
-              git add "$TEST_FILE_PATH"
-              GENERATED_FILES_COUNT=$((GENERATED_FILES_COUNT+1))
-            fi
-          done
-
-          if [ "$GENERATED_FILES_COUNT" -eq 0 ]; then
-            echo "No JUnit tests were successfully generated. Exiting."
-            echo "::set-output name=pr_created::false"
-            exit 0
-          fi
-
-          # Commit the generated test files
-          git commit -m "feat: Add auto-generated JUnit tests for new code"
-          git push origin "$BRANCH_NAME"
-
-          echo "::set-output name=branch_name::$BRANCH_NAME"
-          echo "::set-output name=pr_created::true"
-
-      - name: Create Pull Request
-        if: steps.generate_tests.outputs.pr_created == 'true'
-        uses: peter-evans/create-pull-request@v6
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }} # GitHub's default token for PR creation
-          commit-message: "feat: Add auto-generated JUnit tests"
-          title: "feat: Auto-generated JUnit tests for recent changes"
-          body: |
-            This pull request contains auto-generated JUnit tests for the recent code changes.
-            Please review the generated tests for correctness and completeness.
-            Generated by GitHub Action.
-          branch: ${{ steps.generate_tests.outputs.branch_name }}
-          base: main # Target branch for the PR
-          delete-branch-after-merge: true # Optional: Delete the branch after merging
+          ./scripts/generate-tests.sh  # Custom script that uses OpenAI API
+      - name: Commit generated tests
+        run: |
+          git config user.name "CI Bot"
+          git config user.email "ci@example.com"
+          git add src/test/java
+          git commit -m "Add AI-generated unit tests"
+          git push
