@@ -1,0 +1,22 @@
+name: Generate JUnit Tests
+
+on:
+  pull_request:
+    paths:
+      - '**/*.java'
+
+jobs:
+  generate-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run test generator script
+        run: |
+          ./scripts/generate-tests.sh  # Custom script that uses OpenAI API
+      - name: Commit generated tests
+        run: |
+          git config user.name "CI Bot"
+          git config user.email "ci@example.com"
+          git add src/test/java
+          git commit -m "Add AI-generated unit tests"
+          git push
