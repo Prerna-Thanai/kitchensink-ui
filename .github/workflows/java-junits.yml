@@ -57,6 +57,10 @@ jobs:
             echo "Processing file: $FILE_PATH"
             FILE_CONTENT=$(cat "$FILE_PATH")
 
+            # Create a temporary file for the content
+            TEMP_FILE_CONTENT=$(mktemp)
+            echo "$FILE_CONTENT" > "$TEMP_FILE_CONTENT"
+
             # Extract package and class name for test file path
             RELATIVE_PATH_WITHOUT_SRC_MAIN_JAVA=$(echo "$FILE_PATH" | sed 's|^src/main/java/||')
             TEST_FILE_PATH="src/test/java/${RELATIVE_PATH_WITHOUT_SRC_MAIN_JAVA%.java}Test.java"
@@ -69,10 +73,14 @@ jobs:
 import requests
 import json
 import os
+import sys
 
-file_content = '''$FILE_CONTENT'''
-test_file_path = '''$TEST_FILE_PATH'''
-api_key = os.environ.get('OPENAI_API_KEY') # Using OPENAI_API_KEY
+# Read file content from the temporary file passed as the first argument
+with open(sys.argv[1], 'r') as f:
+    file_content = f.read()
+
+test_file_path = sys.argv[2] # Test file path passed as the second argument
+api_key = os.environ.get('OPENAI_API_KEY')
 
 if not api_key:
     print('Error: OPENAI_API_KEY is not set.')
@@ -121,15 +129,16 @@ try:
 
         with open(test_file_path, 'w') as f:
             f.write(generated_text)
-        print(f'Successfully generated and saved test for {file_content} to {test_file_path}')
+        print(f'Successfully generated and saved test for {FILE_PATH} to {test_file_path}') # Use FILE_PATH for logging
     else:
-        print(f'Warning: No test content generated for {file_content}.')
+        print(f'Warning: No test content generated for {FILE_PATH}.')
 
 except requests.exceptions.RequestException as e:
     print(f'Error calling OpenAI API: {e}')
     print(f'Response content: {response.text if response else "N/A"}')
     exit(1) # Exit with error if API call fails
-            "
+            " "$TEMP_FILE_CONTENT" "$TEST_FILE_PATH" # Pass temp file path and test file path as arguments
+            rm "$TEMP_FILE_CONTENT" # Clean up temporary file
 
             if [ -f "$TEST_FILE_PATH" ]; then
               git add "$TEST_FILE_PATH"
