@@ -10,11 +10,13 @@ import { HttpClientModule } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
 import { LoaderComponent } from './loader/loader.component';
+import { SharedModule } from './shared/shared.module';
+import { CoreModule } from './core/core.module';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
 // import { LoadingInterceptor } from './shared/interceptors/loading.interceptor';
 // import { TokenInterceptor } from './shared/interceptors/token.interceptor';
-// import { SharedModule } from './shared/shared.module';
-// import { CoreModule } from './core/core.module';
-
 
 @NgModule({
   declarations: [
@@ -26,24 +28,21 @@ import { LoaderComponent } from './loader/loader.component';
   imports: [
     BrowserModule,
     RouterModule,
-    // SharedModule,
-    // CoreModule,
+    SharedModule,
+    CoreModule,
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    FontAwesomeModule
   ],
-//   providers: [CookieService, {
-//     provide: HTTP_INTERCEPTORS,
-//     useClass: LoadingInterceptor,
-//     multi: true
-//   },
-//   {
-//     provide: HTTP_INTERCEPTORS,
-//     useClass: TokenInterceptor,
-//     multi: true
-//   }
-// ],
+  providers: [
+    provideHttpClient(withInterceptorsFromDi()),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,0 +1,50 @@
+.dashboard-container {
+  min-height: 100vh;
+  background-color: #fff;
+  padding: 2rem;
+  color: #1a1a41;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.dashboard-heading {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 2rem;
+}
+
+.accordion-card {
+  max-width: 600px;
+  margin: 0 auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.accordion-header {
+  background-color: #f9f9fb;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  cursor: pointer;
+  color: #1a1a41;
+}
+
+.accordion-header:hover {
+  background-color: #f1f1f3;
+}
+
+.accordion-content {
+  padding: 1.5rem;
+  background-color: #fff;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.rotate-icon {
+  display: inline-block;
+  transform: rotate(180deg);
+  transition: transform 0.2s ease;
+}

@@ -1,1 +1,18 @@
-<p>dashboard works!</p>
+<app-header></app-header>
+
+<div class="dashboard-container">
+
+
+  <div class="accordion-card">
+    <div class="accordion-header" (click)="isOpen = !isOpen">
+      <span>User Profile</span>
+      <span [ngClass]="{ 'rotate-icon': isOpen }">&#9650;</span>
+    </div>
+
+    <div *ngIf="isOpen" class="accordion-content">
+      <p><strong>Name:</strong> {{ userData?.name }}</p>
+      <p><strong>Email:</strong> {{ userData?.email }}</p>
+      <p><strong>Phone:</strong> {{ userData?.phoneNumber }}</p>
+    </div>
+  </div>
+</div>

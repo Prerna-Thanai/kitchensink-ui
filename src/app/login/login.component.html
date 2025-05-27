@@ -29,6 +29,9 @@
       </div>
   
       <button class="submit-btn" type="submit" [disabled]="loginForm.invalid">Login</button>
+      <div class="error" *ngIf="loginError">
+  {{ loginError }}
+</div>
   
       <div class="redirect">
         New user? <a routerLink="/register">Register here</a>

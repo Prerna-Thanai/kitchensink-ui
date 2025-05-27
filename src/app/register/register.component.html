@@ -1,73 +1,96 @@
 <div class="register-container">
-    <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
-      <h2>Create Your Account</h2>
-  
-      <div class="form-group">
-        <label for="name">Full Name</label>
-        <input id="name" type="text" formControlName="name" placeholder="John Doe" />
-        <small class="error" *ngIf="registerForm.get('name')?.touched && registerForm.get('name')?.invalid">
-          Name is required.
-        </small>
-      </div>
-  
-      <div class="form-group">
-        <label for="email">Email Address</label>
-        <input id="email" type="email" formControlName="email" placeholder="you@example.com" />
-        <small class="error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
-          Please enter a valid email.
-        </small>
-        <small class="error" *ngIf="emailTaken">Email already exists.</small>
-      </div>
-  
-      <div class="form-group">
-        <label for="phone">Phone Number</label>
-        <input id="phone" type="tel" formControlName="phone" placeholder="9876543210" />
-        <small class="error" *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.invalid">
-          Valid phone number is required.
-        </small>
-      </div>
-  
-      <div class="form-group password-group">
-        <label for="password">Password</label>
-        <div class="password-wrapper">
-          <input
-            id="password"
-            [type]="showPassword ? 'text' : 'password'"
-            formControlName="password"
-            placeholder="Create a password"
-          />
-          <button type="button" class="toggle-btn" (click)="togglePassword()">
-            {{ showPassword ? 'Hide' : 'Show' }}
-          </button>
-        </div>
-        <small class="error" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
-          Password is required (min 6 characters).
-        </small>
-      </div>
-  
-      <div class="form-group password-group">
-        <label for="confirmPassword">Confirm Password</label>
-        <div class="password-wrapper">
-          <input
-            id="confirmPassword"
-            [type]="showConfirmPassword ? 'text' : 'password'"
-            formControlName="confirmPassword"
-            placeholder="Confirm password"
-          />
-          <button type="button" class="toggle-btn" (click)="toggleConfirmPassword()">
-            {{ showConfirmPassword ? 'Hide' : 'Show' }}
-          </button>
-        </div>
-        <small class="error" *ngIf="registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched">
-          Passwords do not match.
-        </small>
-      </div>
-  
-      <button class="submit-btn" type="submit" [disabled]="registerForm.invalid">Register</button>
-  
-      <div class="redirect">
-        Already have an account? <a routerLink="/login">Login here</a>
-      </div>
-    </form>
+  <form class="register-form" [formGroup]="registerForm" (ngSubmit)="onRegister()" novalidate>
+    <h2>Create Your Account</h2>
+
+    <div class="form-group">
+      <label for="name">Full Name</label>
+      <input id="name" type="text" formControlName="name" placeholder="John Doe" />
+      <small class="error" *ngIf="registerForm.get('name')?.touched && registerForm.get('name')?.invalid">
+        Name is required.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input id="email" type="email" formControlName="email" placeholder="you@example.com" />
+      <small class="error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['required']">
+        Email is required.
+      </small>
+      <small class="error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['email']">
+        Please enter a valid email.
+      </small>
+      <small class="error" *ngIf="emailTaken">
+        Email already exists.
+      </small>
+    </div>
+
+    <div class="form-group">
+      <label for="phone">Phone Number</label>
+      <input id="phone" type="tel" formControlName="phone" placeholder="9876543210" />
+      <small class="error" *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.errors?.['required']">
+        Phone number is required.
+      </small>
+      <small class="error" *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.errors?.['invalidPhone']">
+        Valid Indian mobile number required.
+      </small>
+    </div>
+
+    <div class="form-group password-group">
+  <label for="password">Password</label>
+  <div class="password-wrapper">
+    <input
+      id="password"
+      [type]="showPassword ? 'text' : 'password'"
+      formControlName="password"
+      placeholder="Create a password"
+    />
+    <button type="button" class="toggle-btn" (click)="togglePassword()" aria-label="Toggle password visibility">
+      <i class="fa" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+    </button>
   </div>
-  
+  <small class="error" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['required']">
+    Password is required.
+  </small>
+  <small class="error" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['minlength']">
+    Password must be at least 6 characters.
+  </small>
+</div>
+
+
+    <div class="form-group password-group">
+      <label for="confirmPassword">Confirm Password</label>
+      <div class="password-wrapper">
+        <input
+          id="confirmPassword"
+          [type]="showConfirmPassword ? 'text' : 'password'"
+          formControlName="confirmPassword"
+          placeholder="Confirm password"
+        />
+        <button type="button" class="toggle-btn" (click)="toggleConfirmPassword()">
+          {{ showConfirmPassword ? '🙈' : '👁️' }}
+        </button>
+      </div>
+      <small class="error" *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.errors?.['required']">
+        Confirm password is required.
+      </small>
+      <small class="error" *ngIf="registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched">
+        Passwords do not match.
+      </small>
+    </div>
+
+    <div class="server-error" *ngIf="serverError">
+      {{ serverError }}
+    </div>
+
+    <button class="submit-btn" type="submit" [disabled]="registerForm.invalid">
+      Register
+    </button>
+    <div class="success-message" *ngIf="registerSuccess">
+  Registration successful! Redirecting to login...
+</div>
+
+    <div class="redirect">
+      Already have an account? <a routerLink="/login">Login here</a>
+    </div>
+  </form>
+</div>
