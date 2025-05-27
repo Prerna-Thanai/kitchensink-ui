@@ -1,0 +1,46 @@
+/* src/styles/variables.css */
+
+:root {
+  /* Color Palette */
+  --header-bg: #eff2f6;
+  --header-text: #616e7e;
+  --border-color: #e6e8eb;
+  --row-hover-bg: #f9fafc;
+  --text-dark: #3a424d;
+  --text-light: #909cab;
+  --bg-light: #f4f6f8;
+  --bg-card: #ffffff;
+
+  /* Pagination colors */
+  --pagination-active-bg: #407eff;
+  --pagination-active-text: #ffffff;
+  --pagination-btn-bg: #f4f6f8;
+  --pagination-btn-text: #717e8d;
+  --pagination-border: #d0d2d7;
+
+  /* Accent colors */
+  --action-edit: #007bff;
+  --action-delete: #dc3545;
+
+  /* Typography */
+  --font-family-sans: 'Arial', sans-serif;
+  --font-size-base: 14px;
+  --line-height-base: 1.5;
+
+  /* Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-lg: 16px;
+  --spacing-xl: 24px;
+  --spacing-xxl: 32px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 10px 20px rgba(0, 0, 0, 0.1);
+
+  /* Z-index */
+  --z-modal-overlay: 1000;
+  --z-modal-content: 1001;
+}

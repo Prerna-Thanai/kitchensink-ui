@@ -16,21 +16,15 @@ userData: Member | null = null;
   constructor(private userService: UserService) {}
 
 ngOnInit(): void {
-  this.userData =  {
-    "name": 'Prerna',
-    "id": '2e23',
-    "email": 'prern@gmail.com',
-    "phoneNumber": '9992233111',
-    "roles": ['ADMIN'],
-    createdAt: ""
-  };
-    // this.userService.getUser().subscribe({
-    //   next: (res: Member) => {
-        // this.userData = { ...res, name: 'Prerna' }; // overwrite name safely
-    //   },
-    //   error: (err) => {
-    //     console.error('Failed to load user data:', err);
-    //   }
-    // });
+
+    this.userService.getUser().subscribe({
+      next: (res: Member) => {
+        console.log('User data loaded:', res);
+        this.userData = res;
+      },
+      error: (err) => {
+        console.error('Failed to load user data:', err);
+      }
+    });
   }
 }

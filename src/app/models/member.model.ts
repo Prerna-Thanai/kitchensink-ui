@@ -4,7 +4,9 @@ export interface Member {
   email: string;
   phoneNumber: string;
   roles: MemberRole[];
-  createdAt: string;
+  isActive?: boolean;
+  isBlocked?: boolean;
+  joiningDate: string;
 }
 
 export interface RegisterMemberDto {

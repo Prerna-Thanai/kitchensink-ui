@@ -1,0 +1,29 @@
+/* src/styles/styles.css */
+
+/* Remove any @import statements for SCSS partials or Font Awesome here.
+   Font Awesome should be imported via angular.json or a <link> tag in index.html. */
+:root {
+  --spacing-xl: 24px;
+  --spacing-md: 16px;
+  --text-dark: #333;
+  --bg-light: #f9f9f9;
+  /* ... */
+}
+
+/* Global Body Styles using CSS Custom Properties */
+body {
+  font-family: var(--font-family-sans);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+  color: var(--text-dark);
+  background-color: var(--bg-light);
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Add any other global plain CSS rules here */

@@ -15,6 +15,7 @@ import { CoreModule } from './core/core.module';
 import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
+import { AdminComponent } from './admin/admin.component';
 // import { LoadingInterceptor } from './shared/interceptors/loading.interceptor';
 // import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 
@@ -22,7 +23,8 @@ import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
   declarations: [
     AppComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    AdminComponent
     // LoaderComponent
   ],
   imports: [

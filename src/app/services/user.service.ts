@@ -1,20 +1,67 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { catchError, Observable, of } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Observable } from 'rxjs';
+import { Member, MemberRole } from '../models/member.model';
+import { PagedModel } from '../admin/admin.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+  private userUrl = environment.userUrl;
+  private allUsersUrl = environment.allUsersUrl;
+  private updateUserUrl = environment.updateUserUrl;
 
-    private userUrl = environment.userUrl;
+  constructor(private http: HttpClient, private router: Router) {}
 
-    constructor(private http: HttpClient, private router: Router) {}
-    
-    getUser(): Observable<any> {
-            return this.http.get(`${this.userUrl}`,{ withCredentials: true });
+  getUser(): Observable<any> {
+    return this.http.get<any>(this.userUrl, { withCredentials: true });
+  }
+  
+  getUsers(params: HttpParams, currentPage: number, itemsPerPage: number): Observable<any> {
+    return this.http.get<PagedModel<Member>>(this.allUsersUrl, { params, withCredentials: true }).pipe(
+      catchError(err => {
+        console.error('API Error:', err);
+        // Return a default PagedModel on error to prevent application crash
+        return of({
+          content: [],
+          page: {
+            size: itemsPerPage,
+            number: currentPage,
+            totalElements: 0,
+            totalPages: 0
           }
+        });
+      })
+    );
+}
+
+updateMember(memberId: string, originalMember: Member, updatedFormPartial: {
+    name: string;
+    phoneNumber: string;
+    role: MemberRole;
+    isBlocked: boolean;
+  }): Observable<Member> {
+    const payload: Partial<Member> = {
+      name: updatedFormPartial.name,
+      phoneNumber: updatedFormPartial.phoneNumber,
+      roles: [updatedFormPartial.role], // Role is from UI, send as array
+      email: originalMember.email, // Email is not updated by UI, send original
+      isBlocked: updatedFormPartial.isBlocked
+    };
+
+    return this.http.put<Member>(`${this.updateUserUrl}/${memberId}`, payload, { withCredentials: true });
+  }
+
+  /**
+   * Deletes a member by ID.
+   * @param memberId The ID of the member to delete.
+   * @returns An Observable of any (or void if backend returns no content).
+   */
+//   deleteMember(memberId: string): Observable<any> {
+//     return this.http.delete(`${this.apiUrl}/${memberId}`, { withCredentials: true });
+//   }
 
 }

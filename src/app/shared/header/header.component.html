@@ -1,14 +1,20 @@
 <nav class="header">
-  <div class="logo">GROUP<span>IT</span></div>
+  <div class="logo">KITCHEN<span>SINK</span></div>
 
   <ul class="nav-links">
-    <li routerLink="/dashboard" routerLinkActive="active">DASHBOARD</li>
-    <li routerLink="/admin" routerLinkActive="active">ADMIN</li>
+    <li>
+      <a [routerLink]="'/dashboard'" routerLinkActive="active">DASHBOARD</a>
+    </li>
+    <li *ngIf="isAdmin">
+      <a [routerLink]="'/admin'" routerLinkActive="active">ADMIN</a>
+    </li>
   </ul>
 
   <div class="header-right">
-    <button class="manual-btn">USER MANUAL HE</button>
-    //TODO update this
-    <div class="user-name">Kanika Mehta</div>
+    <div class="user-name">{{ user?.name }}</div>
+    <a href="#" (click)="logout()" title="Logout">
+      <i class="fas fa-sign-out-alt text-danger cursor-pointer"></i>
+    </a>
   </div>
+  
 </nav>
