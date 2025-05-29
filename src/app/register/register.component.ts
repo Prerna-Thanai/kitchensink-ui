@@ -4,6 +4,7 @@ import { RegisterMemberDto } from '../models/member.model';
 import { AuthService } from '../services/auth.service';
 import { timer } from 'rxjs';
 import { Router } from '@angular/router';
+import { PhoneNumberUtil } from 'google-libphonenumber';
 
 @Component({
   selector: 'app-register',
@@ -19,13 +20,15 @@ export class RegisterComponent {
   registerSuccess = false;
   serverError = '';
 
+  private phoneUtil = PhoneNumberUtil.getInstance();
+
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
     this.registerForm = this.fb.group(
       {
-        name: ['', Validators.required],
-        email: ['', [Validators.required, Validators.email]],
-        phone: ['', [Validators.required, this.validIndianPhone]],
-        password: ['', [Validators.required, Validators.minLength(6)]],
+        name: ['', [Validators.required, this.fullNameValidator]],
+        email: ['', [Validators.required, this.stringEmailValidator]],
+        phone: ['', [Validators.required, this.validPhoneWithLib.bind(this)]],
+        password: ['', [Validators.required, Validators.minLength(6), this.strongPasswordValidator]],
         confirmPassword: ['', Validators.required]
       },
       {
@@ -34,12 +37,39 @@ export class RegisterComponent {
     );
   }
 
-  validIndianPhone(control: AbstractControl): ValidationErrors | null {
-    const value = control.value;
-    const phoneRegex = /^[6-9]\d{9}$/;
-    if (!value) return null;
-    return phoneRegex.test(value) ? null : { invalidPhone: true };
+  fullNameValidator(control: AbstractControl): ValidationErrors | null {
+  const name = control.value;
+  if (!name) return null;
+
+  // Match only letters (a-z, A-Z) and spaces
+  const nameRegex = /^[A-Za-z\s]+$/;
+
+  return nameRegex.test(name) ? null : { invalidFullName: true };
+}
+
+    validPhoneWithLib(control: AbstractControl): ValidationErrors | null {
+    const phone = control.value;
+    if (!phone) return null;
+
+    try {
+      const parsed = this.phoneUtil.parse(phone, 'IN');
+      const isValid = this.phoneUtil.isValidNumberForRegion(parsed, 'IN');
+      return isValid ? null : { invalidPhone: true };
+    } catch (e) {
+      return { invalidPhone: true };
+    }
   }
+
+  strongPasswordValidator(control: AbstractControl): ValidationErrors | null {
+  const value = control.value;
+  if (!value) return null;
+
+  const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/;
+
+  return pattern.test(value)
+    ? null
+    : { weakPassword: true };
+}
 
   passwordMatchValidator(form: FormGroup): ValidationErrors | null {
     const password = form.get('password')?.value;
@@ -54,6 +84,17 @@ export class RegisterComponent {
   toggleConfirmPassword(): void {
     this.showConfirmPassword = !this.showConfirmPassword;
   }
+
+  stringEmailValidator(control: AbstractControl): ValidationErrors | null {
+  const email = control.value;
+  if (!email) return null;
+
+  // Robust regex for RFC 5322-compliant email addresses
+  const emailRegex =
+    /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  return emailRegex.test(email) ? null : { invalidEmailFormat: true };
+}
 
   onRegister(): void {
   this.emailTaken = false;

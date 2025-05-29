@@ -1,41 +1,43 @@
 <div class="login-container">
-    <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
-      <h2>Login to Your Account</h2>
-  
-      <div class="form-group">
-        <label for="email">Email Address</label>
-        <input id="email" type="email" formControlName="email" placeholder="you@example.com" />
-        <small class="error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
-          Please enter a valid email.
-        </small>
+  <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
+    <h2>Welcome Back 👋</h2>
+
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input id="email" type="email" formControlName="email" placeholder="you@example.com" />
+      <small class="error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
+        Please enter a valid email.
+      </small>
+    </div>
+
+    <div class="form-group password-group">
+      <label for="password">Password</label>
+      <div class="password-wrapper">
+        <input
+          id="password"
+          [type]="showPassword ? 'text' : 'password'"
+          formControlName="password"
+          placeholder="Enter your password"
+        />
+        <button type="button" class="toggle-btn" (click)="togglePassword()" aria-label="Toggle Password Visibility">
+          <span class="material-icons-outlined">
+            {{ showPassword ? 'visibility_off' : 'visibility' }}
+          </span>
+        </button>
       </div>
-  
-      <div class="form-group password-group">
-        <label for="password">Password</label>
-        <div class="password-wrapper">
-          <input
-            id="password"
-            [type]="showPassword ? 'text' : 'password'"
-            formControlName="password"
-            placeholder="Enter password"
-          />
-          <button type="button" class="toggle-btn" (click)="togglePassword()">
-            {{ showPassword ? 'Hide' : 'Show' }}
-          </button>
-        </div>
-        <small class="error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
-          Password is required.
-        </small>
-      </div>
-  
-      <button class="submit-btn" type="submit" [disabled]="loginForm.invalid">Login</button>
-      <div class="error" *ngIf="loginError">
-  {{ loginError }}
+      <small class="error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
+        Password is required.
+      </small>
+    </div>
+
+    <button class="submit-btn" type="submit" [disabled]="loginForm.invalid">Login</button>
+
+    <div class="error" *ngIf="loginError">
+      {{ loginError }}
+    </div>
+
+    <div class="redirect">
+      New user? <a routerLink="/register">Register here</a>
+    </div>
+  </form>
 </div>
-  
-      <div class="redirect">
-        New user? <a routerLink="/register">Register here</a>
-      </div>
-    </form>
-  </div>
-  
