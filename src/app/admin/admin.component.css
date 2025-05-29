@@ -119,11 +119,15 @@
   padding: 12px 8px;
   border: 1px solid #e0e0e0;
   text-align: left;
-  background: #fff;
   border-bottom: 1px solid var(--border-color); /* Changed from $border-color */
   color: var(--text-dark); /* Changed from $text-dark */
   font-size: var(--font-size-base); /* Changed from $font-size-base */
   white-space: normal;
+}
+
+.user-table tbody tr:hover td {
+  background-color: #cdcfd0; /* Light blue or any color */
+  transition: background-color 0.5s ease-in-out;
 }
 
 .user-table th { /* Flattened from nested rule */
