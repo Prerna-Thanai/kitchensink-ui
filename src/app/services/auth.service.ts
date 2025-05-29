@@ -15,7 +15,6 @@ export class AuthService {
     private registerUrl = environment.registerUrl;
     private loginUrl = environment.loginUrl;
     private refreshTokenUrl = environment.refreshTokenUrl;
-    private logoutUrl = environment.logoutUrl;
     private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private authState$ = new BehaviorSubject<boolean>(false);
@@ -156,11 +155,11 @@ export class AuthService {
   }
 
   verifyToken(): Observable<any> {
-  return this.http.get('http://localhost:8080/api/auth/check', { withCredentials: true });
+  return this.http.get('/api/auth/check', { withCredentials: true });
 }
 
-  logout(): Observable<any> {
-    return this.http.post(this.logoutUrl, {}, { withCredentials: true });
+  logout() {
+    // throw new Error('Method not implemented.');
   }
 
 

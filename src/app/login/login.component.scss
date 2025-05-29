@@ -39,36 +39,22 @@ input {
   border: 1px solid #ccc;
   border-radius: 6px;
   font-size: 1rem;
-  width: 100%;
-  box-sizing: border-box;
 }
 
 .password-wrapper {
-  position: relative;
   display: flex;
   align-items: center;
-}
-
-.password-input {
-  width: 100%;
-  padding-right: 40px; // space for eye icon
+  position: relative;
 }
 
 .toggle-btn {
   position: absolute;
-  top: 50%;
   right: 10px;
-  transform: translateY(-50%);
-  background: transparent;
+  background: none;
   border: none;
-  font-size: 1rem;
+  font-size: 0.85rem;
   color: #3498db;
   cursor: pointer;
-  padding: 0;
-
-  i.fa {
-    pointer-events: none;
-  }
 }
 
 .error {

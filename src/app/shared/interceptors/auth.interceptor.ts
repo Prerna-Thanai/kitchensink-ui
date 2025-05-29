@@ -13,7 +13,7 @@ import { AuthService } from '../../services/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  private readonly SKIP_URLS = ['/login', '/register','/auth/refresh', '/assets/', '/logout'];
+  private readonly SKIP_URLS = ['/login', '/register','/auth/refresh', '/assets/'];
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
