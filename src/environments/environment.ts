@@ -7,5 +7,6 @@ export const environment = {
     userUrl: 'http://localhost:8080/api/member/current',
     allUsersUrl: 'http://localhost:8080/api/member/all',
     userApiUrl: 'http://localhost:8080/api/member',
+    logoutUrl: 'http://localhost:8080/api/auth/logout',
 
   };

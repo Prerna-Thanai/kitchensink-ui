@@ -11,18 +11,14 @@
       </div>
   
       <div class="form-group password-group">
-        <label for="password">Password</label>
-        <div class="password-wrapper">
-          <input
-            id="password"
-            [type]="showPassword ? 'text' : 'password'"
-            formControlName="password"
-            placeholder="Enter password"
-          />
-          <button type="button" class="toggle-btn" (click)="togglePassword()">
-            {{ showPassword ? 'Hide' : 'Show' }}
-          </button>
-        </div>
+      <label for="password">Password</label>
+      <div class="password-wrapper">
+        <input id="password" [type]="showPassword ? 'text' : 'password'" formControlName="password"
+          placeholder="Create a password" class="password-input" />
+        <button type="button" class="toggle-btn" (click)="togglePassword()" aria-label="Toggle password visibility">
+          <i class="fa" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+        </button>
+      </div>
         <small class="error" *ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.invalid">
           Password is required.
         </small>
