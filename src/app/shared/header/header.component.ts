@@ -14,7 +14,6 @@ export class HeaderComponent {
 
   user: any;
   isAdmin: boolean = false;
-    private authState$ = new BehaviorSubject<boolean>(false);
   
 
 constructor(private userService: UserService, private authService: AuthService, private router: Router) {}
@@ -29,9 +28,7 @@ constructor(private userService: UserService, private authService: AuthService, 
   logout(){
     this.authService.logout().subscribe({
     next: () => {
-      // this.authState$.next(true);
       console.log('Logout successful');
-      // this.router.navigate(['/login']);
     },
     error: (err) => {
       console.error('Logout failed', err);

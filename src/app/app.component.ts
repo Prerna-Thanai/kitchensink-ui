@@ -10,10 +10,4 @@ import { AuthService } from './services/auth.service';
 })
 export class AppComponent {
   title = 'kitchensink-ui';
-
-  constructor(private authService: AuthService) {}
-
-ngOnInit() {
-  this.authService.initAuthState();
-}
 }

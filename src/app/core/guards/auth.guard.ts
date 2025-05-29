@@ -1,30 +1,34 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { catchError, map, of } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
-import { map, take } from 'rxjs';
+
+const CACHE_DURATION = 60_000; // 1 minute cache
+
+let lastCheckTime = 0;
+let lastResult = false;
 
 export const authGuard: CanActivateFn = (route, state) => {
-  const router = inject(Router);
   const authService = inject(AuthService);
+  const router = inject(Router);
+  const now = Date.now();
 
-  const SKIP_URLS = ['/login', '/register'];
-  const isSkipped = SKIP_URLS.some(url => state.url.includes(url));
-  if (isSkipped) return true;
-  console.log(1);
+  if (now - lastCheckTime < CACHE_DURATION && lastResult) {
+    // Return cached result immediately
+    return of(true);
+  }
 
-  // Async check to verify token and refresh if needed
-  return authService.isAuthenticated().pipe(
-    take(1),
-    map(isAuth => {
-      if(isAuth){
-        console.log('User is authenticated');
-        return true;
-      }else{
-        console.log('User is not authenticated, redirecting to login');
-        return router.createUrlTree(['/login']);
-      }
-      // isAuth ? true : router.createUrlTree(['/login'])
+  return authService.authCheck().pipe(
+    map(() => {
+      lastCheckTime = now;
+      lastResult = true;
+      return true;
+    }),
+    catchError(() => {
+      lastCheckTime = now;
+      lastResult = false;
+      router.navigateByUrl('/login');
+      return of(false);
     })
   );
-  
 };

@@ -13,7 +13,7 @@ import { AuthService } from '../../services/auth.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  private readonly SKIP_URLS = ['/login', '/register','/auth/refresh', '/assets/', '/logout'];
+  private readonly SKIP_URLS = ['/login', '/register','/assets/'];
   private isRefreshing = false;
   private refreshTokenSubject: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 
@@ -26,31 +26,15 @@ export class AuthInterceptor implements HttpInterceptor {
       return next.handle(req);
     }
 
-    return next.handle(req.clone({ withCredentials: true })).pipe(
+    return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401 && !req.url.includes('/auth/refresh')) {
-          return this.authService.handle401Error(req, next);
+        if (error.status === 401) {
+          this.router.navigate(['/login']);
         }
         return throwError(() => error);
       })
     );
 
-    // return from(this.authService.checkAndRefreshTokenIfNeeded()).pipe(
-    //   switchMap((isValid: boolean) => {
-    //     if (!isValid) {
-    //       this.router.navigate(['/login']);
-    //       return throwError(() => new Error('Session expired'));
-    //     }
-
-    //     return next.handle(req);
-    //   }),
-    //   catchError((error: HttpErrorResponse) => {
-    //     if (error.status === 401) {
-    //       this.router.navigate(['/login']);
-    //     }
-    //     return throwError(() => error);
-    //   })
-    // );
   }
 
   // handle401Error(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {

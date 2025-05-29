@@ -297,15 +297,18 @@ this.filteredUsers = [...this.users];
     if (this.selectedUser && this.selectedUser.id) { // Ensure selectedUser and its ID exist
       this.loading = true;
 
+      console.log("Original block value:", this.selectedUser.blocked);
+      console.log("Form block value:", this.editUserForm.blocked);
       // Prepare the data to send to the backend
       const updatedFormPartialData = {
         name: this.editUserForm.name,
         phoneNumber: this.editUserForm.phoneNumber,
-        role: this.editUserForm.role,
-        blocked: this.editUserForm.blocked ?? false // Include blocked from the form
+        roles: [this.editUserForm.role],
+        email: this.selectedUser.email, // Keep the original email
+        unBlockMember: (this.selectedUser.blocked && !this.editUserForm.blocked) ?? false
       };
 
-      this.userService.updateMember(this.selectedUser.id, this.selectedUser, updatedFormPartialData).subscribe({
+      this.userService.updateMember(this.selectedUser.id, updatedFormPartialData).subscribe({
         next: (updatedMember) => {
           console.log(updatedMember);
           // Update the user in the local array to reflect changes immediately

@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors, AsyncValidatorFn } from '@angular/forms';
 import { RegisterMemberDto } from '../models/member.model';
 import { AuthService } from '../services/auth.service';
-import { timer } from 'rxjs';
+import { catchError, map, Observable, of, timer } from 'rxjs';
 import { Router } from '@angular/router';
 import { PhoneNumberUtil } from 'google-libphonenumber';
 
@@ -23,19 +23,22 @@ export class RegisterComponent {
   private phoneUtil = PhoneNumberUtil.getInstance();
 
   constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
-    this.registerForm = this.fb.group(
-      {
-        name: ['', [Validators.required, this.fullNameValidator]],
-        email: ['', [Validators.required, this.stringEmailValidator]],
-        phone: ['', [Validators.required, this.validPhoneWithLib.bind(this)]],
-        password: ['', [Validators.required, Validators.minLength(6), this.strongPasswordValidator]],
-        confirmPassword: ['', Validators.required]
-      },
-      {
-        validators: this.passwordMatchValidator
-      }
-    );
-  }
+  this.registerForm = this.fb.group(
+    {
+      name: ['', [Validators.required, this.fullNameValidator]],
+      email: ['', [Validators.required, this.stringEmailValidator]],
+      phone: ['', 
+  [Validators.required], 
+  [this.validatePhoneAsync()]
+],
+      password: ['', [Validators.required, Validators.minLength(6), this.strongPasswordValidator]],
+      confirmPassword: ['', Validators.required]
+    },
+    {
+      validators: this.passwordMatchValidator
+    }
+  );
+}
 
   fullNameValidator(control: AbstractControl): ValidationErrors | null {
   const name = control.value;
@@ -59,6 +62,26 @@ export class RegisterComponent {
       return { invalidPhone: true };
     }
   }
+  
+  validatePhoneAsync(): AsyncValidatorFn {
+    return (_control: AbstractControl): Observable<ValidationErrors | null> => {
+    return of(null); // always valid
+  };
+
+  //Note disabled currently, but it is working
+  // return (control: AbstractControl): Observable<ValidationErrors | null> => {
+  //   if (!control.value) {
+  //     return of(null); // skip validation if empty
+  //   }
+
+  //   return this.authService.validatePhone(control.value).pipe(
+  //     map((response: any) => {
+  //       return response.valid ? null : { invalidPhone: true };
+  //     }),
+  //     catchError(() => of({ invalidPhone: true })) // API/network failure = invalid
+  //   );
+  // };
+}
 
   strongPasswordValidator(control: AbstractControl): ValidationErrors | null {
   const value = control.value;

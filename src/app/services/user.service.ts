@@ -38,20 +38,21 @@ export class UserService {
     );
 }
 
-updateMember(memberId: string, originalMember: Member, updatedFormPartial: {
+updateMember(memberId: string, updatedFormPartial: {
     name: string;
     phoneNumber: string;
-    role: MemberRole;
-    blocked: boolean;
+    roles: MemberRole[];
+    email: string;
+    unBlockMember: boolean;
   }): Observable<Member> {
-    const payload: Partial<Member> = {
-      name: updatedFormPartial.name,
-      phoneNumber: updatedFormPartial.phoneNumber,
-      roles: [updatedFormPartial.role], 
-      email: originalMember.email,
-      blocked: updatedFormPartial.blocked
-    };
-    return this.http.put<Member>(`${this.userApiUrl}/${memberId}`, payload, { withCredentials: true });
+    // const payload: Partial<Member> = {
+    //   name: updatedFormPartial.name,
+    //   phoneNumber: updatedFormPartial.phoneNumber,
+    //   roles: [updatedFormPartial.role], 
+    //   email: originalMember.email,
+    //   unblockMember: updatedFormPartial.unblockMember
+    // };
+    return this.http.put<Member>(`${this.userApiUrl}/${memberId}`, updatedFormPartial, { withCredentials: true });
   }
 
   /**
@@ -62,5 +63,7 @@ updateMember(memberId: string, originalMember: Member, updatedFormPartial: {
   deleteMember(memberId: string): Observable<any> {
     return this.http.delete(`${this.userApiUrl}/${memberId}`, { withCredentials: true });
   }
+
+  
 
 }

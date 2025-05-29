@@ -5,13 +5,8 @@
     <div class="controls">
       <div class="search-container">
         <i class="fas fa-search search-icon"></i>
-        <input
-          type="text"
-          [(ngModel)]="searchText"
-          (input)="onSearchChange()"
-          placeholder="Search by name or email"
-          class="search-input"
-        />
+        <input type="text" [(ngModel)]="searchText" (input)="onSearchChange()" placeholder="Search by name or email"
+          class="search-input" />
       </div>
 
       <select [(ngModel)]="selectedRole" (change)="onRoleFilterChange()" class="role-filter">
@@ -30,39 +25,33 @@
         <tr>
           <th (click)="sortData('name')" [class.sortable]="true">
             Name
-            <i class="fas fa-sort"
-              [class.fa-sort-up]="sortColumn === 'name' && sortDirection === 'asc'"
+            <i class="fas fa-sort" [class.fa-sort-up]="sortColumn === 'name' && sortDirection === 'asc'"
               [class.fa-sort-down]="sortColumn === 'name' && sortDirection === 'desc'"></i>
           </th>
           <th (click)="sortData('email')" [class.sortable]="true">
             Email
-            <i class="fas fa-sort"
-              [class.fa-sort-up]="sortColumn === 'email' && sortDirection === 'asc'"
+            <i class="fas fa-sort" [class.fa-sort-up]="sortColumn === 'email' && sortDirection === 'asc'"
               [class.fa-sort-down]="sortColumn === 'email' && sortDirection === 'desc'"></i>
           </th>
           <th (click)="sortData('phoneNumber')" [class.sortable]="true">
             Phone Number
-            <i class="fas fa-sort"
-              [class.fa-sort-up]="sortColumn === 'phoneNumber' && sortDirection === 'asc'"
+            <i class="fas fa-sort" [class.fa-sort-up]="sortColumn === 'phoneNumber' && sortDirection === 'asc'"
               [class.fa-sort-down]="sortColumn === 'phoneNumber' && sortDirection === 'desc'"></i>
           </th>
           <th (click)="sortData('roles')" [class.sortable]="true">
             Role
-            <i class="fas fa-sort"
-              [class.fa-sort-up]="sortColumn === 'roles' && sortDirection === 'asc'"
+            <i class="fas fa-sort" [class.fa-sort-up]="sortColumn === 'roles' && sortDirection === 'asc'"
               [class.fa-sort-down]="sortColumn === 'roles' && sortDirection === 'desc'"></i>
           </th>
           <th (click)="sortData('joiningDate')" [class.sortable]="true">
             Joining Date
-            <i class="fas fa-sort"
-              [class.fa-sort-up]="sortColumn === 'joiningDate' && sortDirection === 'asc'"
+            <i class="fas fa-sort" [class.fa-sort-up]="sortColumn === 'joiningDate' && sortDirection === 'asc'"
               [class.fa-sort-down]="sortColumn === 'joiningDate' && sortDirection === 'desc'"></i>
           </th>
           <th (click)="sortData('blocked')" [class.sortable]="true">
             Status
-            <i class="fas fa-sort"
-               [class.fa-sort-up]="sortColumn === 'blocked' && sortDirection === 'asc'"
-               [class.fa-sort-down]="sortColumn === 'blocked' && sortDirection === 'desc'"></i>
+            <i class="fas fa-sort" [class.fa-sort-up]="sortColumn === 'blocked' && sortDirection === 'asc'"
+              [class.fa-sort-down]="sortColumn === 'blocked' && sortDirection === 'desc'"></i>
           </th>
           <th>Actions</th>
         </tr>
@@ -108,7 +97,8 @@
     </div>
 
     <div class="pagination-info">
-      Showing {{ currentPage * itemsPerPage + 1 }} to {{ currentPage * itemsPerPage + filteredUsers.length }} of {{ totalItems }} entries
+      Showing {{ currentPage * itemsPerPage + 1 }} to {{ currentPage * itemsPerPage + filteredUsers.length }} of {{
+      totalItems }} entries
     </div>
 
     <div class="pagination-buttons">
@@ -120,9 +110,7 @@
       </button>
 
       <ng-container *ngFor="let page of getPages()">
-        <button class="page-number-btn"
-                [class.active]="page === currentPage"
-                (click)="goToPage(page)">
+        <button class="page-number-btn" [class.active]="page === currentPage" (click)="goToPage(page)">
           {{ page + 1 }}
         </button>
       </ng-container>
@@ -137,72 +125,56 @@
   </div>
 
   <div *ngIf="showEditModal" class="modal-overlay">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h3>Edit User: {{ selectedUser?.name }}</h3>
-      <button class="close-modal-btn" (click)="closeEditModal()">&times;</button>
-    </div>
-    <div class="modal-body">
-      <form (ngSubmit)="saveUser()">
-        <div class="form-group">
-          <label for="editName">Name:</label>
-          <input type="text" id="editName" [(ngModel)]="editUserForm.name" name="name" required />
-        </div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Edit User: {{ selectedUser?.name }}</h3>
+        <button class="close-modal-btn" (click)="closeEditModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form (ngSubmit)="saveUser()">
+          <div class="form-group">
+            <label for="editName">Name:</label>
+            <input type="text" id="editName" [(ngModel)]="editUserForm.name" name="name" required />
+          </div>
 
-        <div class="form-group">
-          <label for="editEmail">Email:</label>
-          <input
-            type="email"
-            id="editEmail"
-            [(ngModel)]="editUserForm.email"
-            name="email"
-            disabled
-            style="background-color: #f0f0f0; color: #666;"
-          />
-        </div>
+          <div class="form-group">
+            <label for="editEmail">Email:</label>
+            <input type="email" id="editEmail" [(ngModel)]="editUserForm.email" name="email" disabled
+              style="background-color: #f0f0f0; color: #666;" />
+          </div>
 
-        <div class="form-group">
-          <label for="editPhoneNumber">Phone Number:</label>
-          <input
-            type="text"
-            id="editPhoneNumber"
-            [(ngModel)]="editUserForm.phoneNumber"
-            name="phoneNumber"
-          />
-        </div>
+          <div class="form-group">
+            <label for="editPhoneNumber">Phone Number:</label>
+            <input type="text" id="editPhoneNumber" [(ngModel)]="editUserForm.phoneNumber" name="phoneNumber" />
+          </div>
 
-        <div class="form-group">
-          <label for="editRole">Role:</label>
-          <select id="editRole" [(ngModel)]="editUserForm.role" name="role" required>
-            <option *ngFor="let role of allAvailableRoles" [value]="role">{{ role }}</option>
-          </select>
-        </div>
+          <div class="form-group">
+            <label for="editRole">Role:</label>
+            <select id="editRole" [(ngModel)]="editUserForm.role" name="role" required>
+              <option *ngFor="let role of allAvailableRoles" [value]="role">{{ role }}</option>
+            </select>
+          </div>
 
-        <div class="form-group">
-          <label for="editJoiningDate">Joining Date:</label>
-          <input
-            type="date"
-            id="editJoiningDate"
-            [(ngModel)]="editUserForm.joiningDate"
-            name="joiningDate"
-            disabled
-            style="background-color: #f0f0f0; color: #666;"
-          />
-        </div>
+          <div class="form-group">
+            <label for="editJoiningDate">Joining Date:</label>
+            <input type="date" id="editJoiningDate" [(ngModel)]="editUserForm.joiningDate" name="joiningDate" disabled
+              style="background-color: #f0f0f0; color: #666;" />
+          </div>
 
-        <div class="form-group">
-          <label for="editIsBlocked">Status:</label>
-          <select id="editIsBlocked" [(ngModel)]="editUserForm.blocked" name="blocked" required>
-            <option [ngValue]="false">UNBLOCKED</option>
-            <option [ngValue]="true">BLOCKED</option>
-          </select>
-        </div>
+          <div class="form-group">
+            <label for="editIsBlocked">Status:</label>
+            <select id="editIsBlocked" [(ngModel)]="editUserForm.blocked" name="blocked"
+              [disabled]="editUserForm.blocked === false" required>
+              <option [ngValue]="false">UNBLOCKED</option>
+              <option [ngValue]="true">BLOCKED</option>
+            </select>
+          </div>
 
-        <div class="modal-actions">
-          <button type="submit" class="primary-btn">Save Changes</button>
-          <button type="button" class="secondary-btn" (click)="closeEditModal()">Cancel</button>
-        </div>
-      </form>
+          <div class="modal-actions">
+            <button type="submit" class="primary-btn">Save Changes</button>
+            <button type="button" class="secondary-btn" (click)="closeEditModal()">Cancel</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
