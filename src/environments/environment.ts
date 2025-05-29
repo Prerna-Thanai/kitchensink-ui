@@ -6,6 +6,6 @@ export const environment = {
     refreshTokenUrl: 'http://localhost:8080/api/auth/refresh',
     userUrl: 'http://localhost:8080/api/member/current',
     allUsersUrl: 'http://localhost:8080/api/member/all',
-    updateUserUrl: 'http://localhost:8080/api/member'
+    userApiUrl: 'http://localhost:8080/api/member',
 
   };

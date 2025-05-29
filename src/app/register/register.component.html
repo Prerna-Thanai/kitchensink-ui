@@ -13,7 +13,8 @@
     <div class="form-group">
       <label for="email">Email Address</label>
       <input id="email" type="email" formControlName="email" placeholder="you@example.com" />
-      <small class="error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['required']">
+      <small class="error"
+        *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['required']">
         Email is required.
       </small>
       <small class="error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.errors?.['email']">
@@ -27,53 +28,53 @@
     <div class="form-group">
       <label for="phone">Phone Number</label>
       <input id="phone" type="tel" formControlName="phone" placeholder="9876543210" />
-      <small class="error" *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.errors?.['required']">
+      <small class="error"
+        *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.errors?.['required']">
         Phone number is required.
       </small>
-      <small class="error" *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.errors?.['invalidPhone']">
+      <small class="error"
+        *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.errors?.['invalidPhone']">
         Valid Indian mobile number required.
       </small>
     </div>
 
     <div class="form-group password-group">
-  <label for="password">Password</label>
-  <div class="password-wrapper">
-    <input
-      id="password"
-      [type]="showPassword ? 'text' : 'password'"
-      formControlName="password"
-      placeholder="Create a password"
-    />
-    <button type="button" class="toggle-btn" (click)="togglePassword()" aria-label="Toggle password visibility">
-      <i class="fa" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
-    </button>
-  </div>
-  <small class="error" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['required']">
-    Password is required.
-  </small>
-  <small class="error" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['minlength']">
-    Password must be at least 6 characters.
-  </small>
-</div>
+      <label for="password">Password</label>
+      <div class="password-wrapper">
+        <input id="password" [type]="showPassword ? 'text' : 'password'" formControlName="password"
+          placeholder="Create a password" class="password-input" />
+        <button type="button" class="toggle-btn" (click)="togglePassword()" aria-label="Toggle password visibility">
+          <i class="fa" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
+        </button>
+      </div>
+
+      <small class="error"
+        *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['required']">
+        Password is required.
+      </small>
+      <small class="error"
+        *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['minlength']">
+        Password must be at least 6 characters.
+      </small>
+    </div>
 
 
     <div class="form-group password-group">
       <label for="confirmPassword">Confirm Password</label>
       <div class="password-wrapper">
-        <input
-          id="confirmPassword"
-          [type]="showConfirmPassword ? 'text' : 'password'"
-          formControlName="confirmPassword"
-          placeholder="Confirm password"
-        />
-        <button type="button" class="toggle-btn" (click)="toggleConfirmPassword()">
-          {{ showConfirmPassword ? '🙈' : '👁️' }}
+        <input id="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword"
+          placeholder="Confirm password" class="password-input" />
+        <button type="button" class="toggle-btn" (click)="toggleConfirmPassword()"
+          aria-label="Toggle password visibility">
+          <i class="fa" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
         </button>
       </div>
-      <small class="error" *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.errors?.['required']">
+      <small class="error"
+        *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.errors?.['required']">
         Confirm password is required.
       </small>
-      <small class="error" *ngIf="registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched">
+      <small class="error"
+        *ngIf="registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched">
         Passwords do not match.
       </small>
     </div>
@@ -86,8 +87,8 @@
       Register
     </button>
     <div class="success-message" *ngIf="registerSuccess">
-  Registration successful! Redirecting to login...
-</div>
+      Registration successful! Redirecting to login...
+    </div>
 
     <div class="redirect">
       Already have an account? <a routerLink="/login">Login here</a>

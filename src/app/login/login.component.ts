@@ -48,11 +48,12 @@ export class LoginComponent {
     this.authService.login(loginRequest).subscribe({
     next: (res: TokenResponse) => {
       // Save expiry timestamps
-      const now = Date.now();
-      localStorage.setItem('access_token_expiry_at', (now + res.accessTokenExpiry).toString());
-      localStorage.setItem('refresh_token_expiry_at', (now + res.refreshTokenExpiry).toString());
+      // const now = Date.now();
+      // localStorage.setItem('access_token_expiry_at', (now + res.accessTokenExpiry).toString());
+      // localStorage.setItem('refresh_token_expiry_at', (now + res.refreshTokenExpiry).toString());
 
       // Save token or user info if needed
+      console.log('Login successful', res);
         this.router.navigate(['/dashboard']); // Replace with your actual route
       },
       error: (err) => {

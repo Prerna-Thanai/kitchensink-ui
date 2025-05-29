@@ -56,7 +56,7 @@ export class AdminComponent implements OnInit {
     phoneNumber: string;
     role: MemberRole;
     joiningDate: string;
-    isBlocked?: boolean;
+    blocked?: boolean;
   } = {} as any;
 
   allAvailableRoles: MemberRole[] = ['ADMIN', 'USER'];
@@ -72,6 +72,7 @@ export class AdminComponent implements OnInit {
 
   ngOnInit(): void {
     this.loadUsers();
+this.filteredUsers = [...this.users];
   }
 
   loadUsers(): void {
@@ -217,8 +218,18 @@ export class AdminComponent implements OnInit {
    * Handles changes in the search input.
    */
   onSearchChange(): void {
-    this.currentPage = 0; // Reset to the first page on new search
-    this.applyFilterAndPagination();
+    // this.currentPage = 0; // Reset to the first page on new search
+    const search = this.searchText.toLowerCase();
+    if (!this.searchText) {
+      this.filteredUsers = [...this.users];
+      return;
+    }
+
+    this.filteredUsers = this.users.filter(user =>
+      user.name.toLowerCase().includes(search) ||
+      user.email.toLowerCase().includes(search)
+    );
+
   }
 
   /**
@@ -226,7 +237,28 @@ export class AdminComponent implements OnInit {
    */
   onRoleFilterChange(): void {
     this.currentPage = 0; // Reset to the first page on new role filter
-    this.applyFilterAndPagination();
+   if (!this.selectedRole) {
+    this.filteredUsers = [...this.users];
+  } else {
+    this.filteredUsers = this.users.filter(user => user.roles[0] === this.selectedRole);
+  }
+  
+  }
+
+  applyFilters(): void {
+    const search = this.searchText.toLowerCase();
+  this.filteredUsers = this.users.filter(user => {
+    const matchesSearch = this.searchText &&
+      (user.name.toLowerCase().includes(search) || user.email.toLowerCase().includes(search));
+
+    const matchesRole = this.selectedRole && user.roles[0] === this.selectedRole;
+
+    // If neither filter is active, show all
+    if (!this.searchText && !this.selectedRole) return true;
+
+    // If any one matches, include the user
+    return matchesSearch || matchesRole;
+  });
   }
 
   /**
@@ -249,7 +281,8 @@ export class AdminComponent implements OnInit {
       email: member.email,
       phoneNumber: member.phoneNumber,
       role: member.roles[0] || 'USER', // Assume the first role is the primary one
-      joiningDate: member.joiningDate
+      joiningDate: member.joiningDate,
+      blocked: member.blocked ?? false
     };
     this.showEditModal = true;
   }
@@ -259,6 +292,8 @@ export class AdminComponent implements OnInit {
    * In a real app, this would send an update request to the backend.
    */
   saveUser(): void {
+    // console.log(this.editUserForm.blocked);
+    console.log(this.editUserForm.role);
     if (this.selectedUser && this.selectedUser.id) { // Ensure selectedUser and its ID exist
       this.loading = true;
 
@@ -267,11 +302,12 @@ export class AdminComponent implements OnInit {
         name: this.editUserForm.name,
         phoneNumber: this.editUserForm.phoneNumber,
         role: this.editUserForm.role,
-        isBlocked: this.editUserForm.isBlocked ?? false // Include isBlocked from the form
+        blocked: this.editUserForm.blocked ?? false // Include blocked from the form
       };
 
       this.userService.updateMember(this.selectedUser.id, this.selectedUser, updatedFormPartialData).subscribe({
         next: (updatedMember) => {
+          console.log(updatedMember);
           // Update the user in the local array to reflect changes immediately
           const index = this.users.findIndex(m => m.id === updatedMember.id);
           if (index !== -1) {
@@ -302,31 +338,31 @@ export class AdminComponent implements OnInit {
       this.loading = true;
       // *** Replace this with your actual HTTP DELETE request to delete the user ***
       // Example:
-      // this.http.delete(`${this.apiUrl}/${memberId}`).subscribe({
-      //   next: () => {
-      //     this.loadUsers(); // Reload all users after deletion to refresh pagination
-      //   },
-      //   error: (err) => {
-      //     console.error('Error deleting user:', err);
-      //     this.error = 'Failed to delete user. Please try again.';
-      //     this.loading = false;
-      //   }
-      // });
-
-      // --- Mocking the delete operation for demonstration ---
-      of(null).pipe(
-        map(() => {
-          this.users = this.users.filter(member => member.id !== memberId);
-          // After deletion, reload the data to get the updated pagination from the backend
-          this.applyFilterAndPagination();
-          this.loading = false;
-        }),
-        catchError(err => {
+      this.userService.deleteMember(memberId).subscribe({
+        next: (deleteMember) => {
+          this.loadUsers(); // Reload all users after deletion to refresh pagination
+        },
+        error: (err) => {
+          console.error('Error deleting user:', err);
           this.error = 'Failed to delete user. Please try again.';
           this.loading = false;
-          return of(null);
-        })
-      ).subscribe();
+        }
+      });
+
+      // --- Mocking the delete operation for demonstration ---
+      // of(null).pipe(
+      //   map(() => {
+      //     this.users = this.users.filter(member => member.id !== memberId);
+      //     // After deletion, reload the data to get the updated pagination from the backend
+      //     this.applyFilterAndPagination();
+      //     this.loading = false;
+      //   }),
+      //   catchError(err => {
+      //     this.error = 'Failed to delete user. Please try again.';
+      //     this.loading = false;
+      //     return of(null);
+      //   })
+      // ).subscribe();
     }
   }
 
@@ -337,7 +373,7 @@ export class AdminComponent implements OnInit {
     this.showEditModal = false;
     this.selectedUser = null;
     this.editUserForm = {
-      name: '', phoneNumber: '', role: 'USER', isBlocked: false // Reset isBlocked as well
+      name: '', phoneNumber: '', role: 'USER', blocked: false // Reset blocked as well
     } as any;
   }
 }

@@ -12,7 +12,7 @@ import { PagedModel } from '../admin/admin.component';
 export class UserService {
   private userUrl = environment.userUrl;
   private allUsersUrl = environment.allUsersUrl;
-  private updateUserUrl = environment.updateUserUrl;
+  private userApiUrl = environment.userApiUrl;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -42,17 +42,16 @@ updateMember(memberId: string, originalMember: Member, updatedFormPartial: {
     name: string;
     phoneNumber: string;
     role: MemberRole;
-    isBlocked: boolean;
+    blocked: boolean;
   }): Observable<Member> {
     const payload: Partial<Member> = {
       name: updatedFormPartial.name,
       phoneNumber: updatedFormPartial.phoneNumber,
-      roles: [updatedFormPartial.role], // Role is from UI, send as array
-      email: originalMember.email, // Email is not updated by UI, send original
-      isBlocked: updatedFormPartial.isBlocked
+      roles: [updatedFormPartial.role], 
+      email: originalMember.email,
+      blocked: updatedFormPartial.blocked
     };
-
-    return this.http.put<Member>(`${this.updateUserUrl}/${memberId}`, payload, { withCredentials: true });
+    return this.http.put<Member>(`${this.userApiUrl}/${memberId}`, payload, { withCredentials: true });
   }
 
   /**
@@ -60,8 +59,8 @@ updateMember(memberId: string, originalMember: Member, updatedFormPartial: {
    * @param memberId The ID of the member to delete.
    * @returns An Observable of any (or void if backend returns no content).
    */
-//   deleteMember(memberId: string): Observable<any> {
-//     return this.http.delete(`${this.apiUrl}/${memberId}`, { withCredentials: true });
-//   }
+  deleteMember(memberId: string): Observable<any> {
+    return this.http.delete(`${this.userApiUrl}/${memberId}`, { withCredentials: true });
+  }
 
 }

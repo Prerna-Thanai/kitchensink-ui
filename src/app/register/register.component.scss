@@ -44,8 +44,31 @@ input {
 .password-wrapper {
   position: relative;
   display: flex;
-  align-items: center;
+
+  .password-input {
+    width: 100%;
+    padding-right: 40px; // space for the icon
+    box-sizing: border-box;
+  }
+
+  .toggle-btn {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-size: 16px;
+    color: #666;
+
+    i.fa {
+      pointer-events: none;
+    }
+  }
 }
+
 
 .toggle-btn {
   position: absolute;

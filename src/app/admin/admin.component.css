@@ -143,7 +143,7 @@
 /* Sortable Headers */
 .user-table th.sortable {
   cursor: pointer;
-  display: flex;
+  /* display: flex; */
   align-items: center;
   gap: 8px;
   user-select: none;
@@ -422,7 +422,7 @@
   gap: var(--spacing-sm); /* Changed from $spacing-sm */
   padding: var(--spacing-lg); /* Changed from $spacing-lg */
   border-top: 1px solid var(--border-color); /* Changed from $border-color */
-  background-color: var(--header-bg); /* Changed from $header-bg */
+  /* background-color: var(--header-bg); */
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }

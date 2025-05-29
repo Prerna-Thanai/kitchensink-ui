@@ -16,6 +16,7 @@ import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http'
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
 import { AdminComponent } from './admin/admin.component';
+import { CookieService } from 'ngx-cookie-service';
 // import { LoadingInterceptor } from './shared/interceptors/loading.interceptor';
 // import { TokenInterceptor } from './shared/interceptors/token.interceptor';
 
@@ -43,7 +44,8 @@ import { AdminComponent } from './admin/admin.component';
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true
-    }
+    },
+    CookieService
   ],
   bootstrap: [AppComponent]
 })

@@ -91,5 +91,5 @@ export class RegisterComponent {
       console.error('Registration failed:', err.error);
     }
   });
-}
+  }
 }

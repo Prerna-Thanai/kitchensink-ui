@@ -5,7 +5,7 @@ export interface Member {
   phoneNumber: string;
   roles: MemberRole[];
   isActive?: boolean;
-  isBlocked?: boolean;
+  blocked?: boolean;
   joiningDate: string;
 }
 
