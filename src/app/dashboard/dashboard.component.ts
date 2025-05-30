@@ -19,11 +19,9 @@ ngOnInit(): void {
 
     this.userService.getUser().subscribe({
       next: (res: Member) => {
-        console.log('User data loaded:', res);
         this.userData = res;
       },
       error: (err) => {
-        console.error('Failed to load user data:', err);
       }
     });
   }

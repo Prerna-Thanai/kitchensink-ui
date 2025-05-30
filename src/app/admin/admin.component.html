@@ -131,10 +131,21 @@
         <button class="close-modal-btn" (click)="closeEditModal()">&times;</button>
       </div>
       <div class="modal-body">
-        <form (ngSubmit)="saveUser()">
+        <form #editForm="ngForm" (ngSubmit)="saveUser(editForm)">
           <div class="form-group">
             <label for="editName">Name:</label>
-            <input type="text" id="editName" [(ngModel)]="editUserForm.name" name="name" required />
+              <input
+                type="text"
+                id="editName"
+                name="name"
+                [(ngModel)]="editUserForm.name"
+                required
+                pattern="^[A-Za-z\s]+$"
+                #nameRef="ngModel"
+              />
+              <small class="error" *ngIf="nameRef.invalid && nameRef.touched">
+                  Name can contain only letters and spaces.
+              </small>
           </div>
 
           <div class="form-group">
@@ -145,7 +156,18 @@
 
           <div class="form-group">
             <label for="editPhoneNumber">Phone Number:</label>
-            <input type="text" id="editPhoneNumber" [(ngModel)]="editUserForm.phoneNumber" name="phoneNumber" />
+              <input
+              type="text"
+              id="editPhoneNumber"
+              name="phoneNumber"
+              [(ngModel)]="editUserForm.phoneNumber"
+              required
+              pattern="^[6-9]\d{9}$"
+              #phoneRef="ngModel"
+            />
+            <small class="error" *ngIf="phoneRef.invalid && phoneRef.touched">
+              Please Enter a valid phone number
+            </small>
           </div>
 
           <div class="form-group">

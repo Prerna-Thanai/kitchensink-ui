@@ -5,6 +5,8 @@ import { catchError, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { Member, MemberRole } from '../models/member.model';
 import { UserService } from '../services/user.service';
+import { AbstractControl, NgForm, ValidationErrors } from '@angular/forms';
+import { PhoneNumberUtil } from 'google-libphonenumber';
 
 // Updated PagedModel interface to precisely match your API response JSON
 export interface PagedModel<T> {
@@ -61,6 +63,7 @@ export class AdminComponent implements OnInit {
 
   allAvailableRoles: MemberRole[] = ['ADMIN', 'USER'];
 
+
   // IMPORTANT: Replace with your actual backend base URL
   private apiUrl = 'http://localhost:8080/api/members';
 
@@ -94,7 +97,6 @@ this.filteredUsers = [...this.users];
         this.loading = false;
       },
       error: (err) => {
-        console.error('Error loading users:', err);
         this.error = 'Failed to load users. Please try again.';
         this.loading = false;
       }
@@ -291,14 +293,15 @@ this.filteredUsers = [...this.users];
    * Saves the changes made to a user.
    * In a real app, this would send an update request to the backend.
    */
-  saveUser(): void {
-    // console.log(this.editUserForm.blocked);
-    console.log(this.editUserForm.role);
+  saveUser(form: NgForm): void {
+    if (form.invalid) {
+    // Mark all fields as touched to trigger error messages
+    Object.values(form.controls).forEach(control => control.markAsTouched());
+    return;
+  }
+
     if (this.selectedUser && this.selectedUser.id) { // Ensure selectedUser and its ID exist
       this.loading = true;
-
-      console.log("Original block value:", this.selectedUser.blocked);
-      console.log("Form block value:", this.editUserForm.blocked);
       // Prepare the data to send to the backend
       const updatedFormPartialData = {
         name: this.editUserForm.name,
@@ -310,7 +313,6 @@ this.filteredUsers = [...this.users];
 
       this.userService.updateMember(this.selectedUser.id, updatedFormPartialData).subscribe({
         next: (updatedMember) => {
-          console.log(updatedMember);
           // Update the user in the local array to reflect changes immediately
           const index = this.users.findIndex(m => m.id === updatedMember.id);
           if (index !== -1) {
@@ -321,7 +323,6 @@ this.filteredUsers = [...this.users];
           this.loading = false;
         },
         error: (err) => {
-          console.error('Error saving user:', err);
           this.error = 'Failed to save user. Please try again.';
           this.loading = false;
         }
@@ -351,21 +352,6 @@ this.filteredUsers = [...this.users];
           this.loading = false;
         }
       });
-
-      // --- Mocking the delete operation for demonstration ---
-      // of(null).pipe(
-      //   map(() => {
-      //     this.users = this.users.filter(member => member.id !== memberId);
-      //     // After deletion, reload the data to get the updated pagination from the backend
-      //     this.applyFilterAndPagination();
-      //     this.loading = false;
-      //   }),
-      //   catchError(err => {
-      //     this.error = 'Failed to delete user. Please try again.';
-      //     this.loading = false;
-      //     return of(null);
-      //   })
-      // ).subscribe();
     }
   }
 

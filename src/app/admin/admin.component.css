@@ -321,6 +321,13 @@
   font-weight: bold;
 }
 
+.error {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  display: block;
+}
+
 /* Modal Styles */
 .modal-overlay {
   position: fixed;
