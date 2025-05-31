@@ -101,7 +101,7 @@
       totalItems }} entries
     </div>
 
-    <div class="pagination-buttons">
+    <!-- <div class="pagination-buttons">
       <button class="page-nav-btn" (click)="goToFirstPage()" [disabled]="currentPage === 0">
         <i class="fas fa-angle-double-left"></i>
       </button>
@@ -122,7 +122,16 @@
         <i class="fas fa-angle-double-right"></i>
       </button>
     </div>
-  </div>
+  </div> -->
+
+  <div class="pagination-buttons">
+  <button class="page-nav-btn" (click)="prevPage()" [disabled]="currentPage === 0">
+    <i class="fas fa-angle-left"></i> Previous
+  </button>
+  <button class="page-nav-btn" (click)="nextPage()" [disabled]="currentPage === totalPages - 1">
+    Next <i class="fas fa-angle-right"></i>
+  </button>
+</div>
 
   <div *ngIf="showEditModal" class="modal-overlay">
     <div class="modal-content">
