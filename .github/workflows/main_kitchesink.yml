@@ -31,7 +31,7 @@ jobs:
 
       - name: Zip build output
         run: |
-          cd dist/kitchensink-ui
+          cd dist/kitchensink-ui/browser
           zip -r ../../release.zip ./*
 
       - name: Upload artifact
