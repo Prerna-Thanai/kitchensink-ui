@@ -27,12 +27,12 @@ jobs:
         run: npm run build -- --configuration production --base-href /
 
       - name: Show contents of dist folder (debug)
-        run: dir /s dist
+        run: dir /s .\dist
 
-      - name: Zip build output (PowerShell)
+      - name: Zip build output
         run: |
           cd dist\kitchensink-ui\browser
-          Compress-Archive -Path * -DestinationPath ../../../release.zip
+          powershell Compress-Archive -Path * -DestinationPath ../../../release.zip
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -56,11 +56,8 @@ jobs:
         with:
           name: angular-app
 
-      - name: Unzip artifact (PowerShell)
-        run: Expand-Archive -Path release.zip -DestinationPath app -Force
-
-      - name: Show contents of app folder (debug)
-        run: dir /s app
+      - name: Unzip artifact
+        run: powershell Expand-Archive -Path release.zip -DestinationPath app -Force
 
       - name: Login to Azure
         uses: azure/login@v2
