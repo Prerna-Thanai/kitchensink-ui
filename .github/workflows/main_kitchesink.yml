@@ -27,7 +27,8 @@ jobs:
         run: npm run build -- --configuration production --base-href /
 
       - name: Show contents of dist folder (debug)
-        run: dir /s .\dist
+        shell: pwsh
+        run: Get-ChildItem -Path .\dist -Recurse
 
       - name: Zip build output
         run: |
