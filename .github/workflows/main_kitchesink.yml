@@ -70,6 +70,6 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'kitchensink'
+          app-name: 'k-frontend'
           slot-name: 'Production'
           package: 'app'
