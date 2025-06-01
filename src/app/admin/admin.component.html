@@ -189,7 +189,11 @@
       </button>
     </div>
 
-    <div *ngIf="showEditModal" class="modal-overlay">
+    
+  </div>
+</div>
+
+<div *ngIf="showEditModal" class="modal-overlay">
       <div class="modal-content">
         <div class="modal-header">
           <h3>Edit User: {{ selectedUser?.name | capitalizeFirstWord  }}</h3>
@@ -300,5 +304,3 @@
         </div>
       </div>
     </div>
-  </div>
-</div>

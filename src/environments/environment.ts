@@ -8,6 +8,7 @@ export const environment = {
     allUsersUrl: 'http://localhost:8080/api/members/',
     userApiUrl: 'http://localhost:8080/api/members',
     logoutUrl: 'http://localhost:8080/api/auth/logout',
+    searchMembersUrl: 'http://localhost:8080/api/members/search',
     phoneapiKey: ''
 
   };

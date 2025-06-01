@@ -231,17 +231,10 @@ this.filteredUsers = [...this.users];
    * Handles changes in the search input.
    */
   onSearchChange(): void {
-    // this.currentPage = 0; // Reset to the first page on new search
-    const search = this.searchText.toLowerCase();
-    if (!this.searchText) {
-      this.filteredUsers = [...this.users];
-      return;
-    }
 
-    this.filteredUsers = this.users.filter(user =>
-      user.name.toLowerCase().includes(search) ||
-      user.email.toLowerCase().includes(search)
-    );
+      this.currentPage = 0; // Reset to first page on search
+  this.fetchFilteredUsers();
+    
 
   }
 
@@ -249,14 +242,38 @@ this.filteredUsers = [...this.users];
    * Handles changes in the role filter dropdown.
    */
   onRoleFilterChange(): void {
-    this.currentPage = 0; // Reset to the first page on new role filter
-   if (!this.selectedRole) {
-    this.filteredUsers = [...this.users];
-  } else {
-    this.filteredUsers = this.users.filter(user => user.roles[0] === this.selectedRole);
-  }
+
+    this.currentPage = 0; // Reset to first page on filter
+  this.fetchFilteredUsers();
+  
   
   }
+
+  fetchFilteredUsers() {
+  this.loading = true;
+  this.error = null;
+  this.userService.searchMembersByCriteria({
+    name: this.searchText || '',
+    email: this.searchText || '',
+    role: this.selectedRole || '',
+    page: this.currentPage,
+    size: this.itemsPerPage
+  }).subscribe({
+    next: (response: any) => {
+        this.totalItems = response.page.totalElements;
+        this.totalPages = response.page.totalPages;
+        this.itemsPerPage = response.page.size;
+        this.currentPage = response.page.number;
+        this.filteredUsers = response.content;
+      this.loading = false;
+    },
+    error: (err: any) => {
+      this.error = 'Failed to load users';
+      this.loading = false;
+    }
+  });
+}
+
 
   applyFilters(): void {
     const search = this.searchText.toLowerCase();
@@ -362,8 +379,6 @@ this.filteredUsers = [...this.users];
   deleteUser(memberId: string): void {
     if (confirm('Are you sure you want to delete this user?')) {
       this.loading = true;
-      // *** Replace this with your actual HTTP DELETE request to delete the user ***
-      // Example:
       this.userService.deleteMember(memberId).subscribe({
         next: (deleteMember) => {
           this.loadUsers(); // Reload all users after deletion to refresh pagination

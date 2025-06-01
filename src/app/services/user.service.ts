@@ -13,6 +13,7 @@ export class UserService {
   private userUrl = environment.userUrl;
   private allUsersUrl = environment.allUsersUrl;
   private userApiUrl = environment.userApiUrl;
+  private searchMembersUrl = environment.searchMembersUrl;
 
   constructor(private http: HttpClient, private router: Router) {}
 
@@ -45,13 +46,6 @@ updateMember(memberId: string, updatedFormPartial: {
     email: string;
     unBlockMember: boolean;
   }): Observable<Member> {
-    // const payload: Partial<Member> = {
-    //   name: updatedFormPartial.name,
-    //   phoneNumber: updatedFormPartial.phoneNumber,
-    //   roles: [updatedFormPartial.role], 
-    //   email: originalMember.email,
-    //   unblockMember: updatedFormPartial.unblockMember
-    // };
     return this.http.put<Member>(`${this.userApiUrl}/${memberId}`, updatedFormPartial, { withCredentials: true });
   }
 
@@ -63,6 +57,35 @@ updateMember(memberId: string, updatedFormPartial: {
   deleteMember(memberId: string): Observable<any> {
     return this.http.delete(`${this.userApiUrl}/${memberId}`, { withCredentials: true });
   }
+
+  searchMembersByCriteria(params: {
+  name?: string;
+  email?: string;
+  role?: string;
+  page?: number;
+  size?: number;
+  showInactiveMembers?: boolean;
+}): Observable<any> {
+  let httpParams = new HttpParams()
+    .set('page', params.page?.toString() || '0')
+    .set('size', params.size?.toString() || '10')
+    .set('showInactiveMembers', params.showInactiveMembers?.toString() || 'false');
+
+  // Prepare the request body
+  const body: any = {};
+  if (params.name) body.name = params.name;
+  if (params.email) body.email = params.email;
+  if (params.role) body.role = params.role;
+
+  return this.http.post<any>(
+    this.searchMembersUrl,
+    body,
+    {
+      params: httpParams,
+      withCredentials: true
+    }
+  );
+}
 
   
 
