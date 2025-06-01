@@ -28,8 +28,8 @@ export class RegisterComponent {
       name: ['', [Validators.required, this.fullNameValidator]],
       email: ['', [Validators.required, this.stringEmailValidator]],
       phone: ['', 
-  [Validators.required], 
-  [this.validatePhoneAsync()]
+  [Validators.required, 
+  this.validPhoneWithLib.bind(this)]
 ],
       password: ['', [Validators.required, Validators.minLength(6), this.strongPasswordValidator]],
       confirmPassword: ['', Validators.required]

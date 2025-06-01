@@ -64,7 +64,8 @@ export class AdminComponent implements OnInit {
   } = {} as any;
 
   allAvailableRoles: MemberRole[] = ['ADMIN', 'USER'];
-
+  private phoneUtil = PhoneNumberUtil.getInstance();
+phoneNumberError: string = '';
 
   // IMPORTANT: Replace with your actual backend base URL
   // private apiUrl = 'http://localhost:8080/api/members';
@@ -76,6 +77,7 @@ export class AdminComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.serverError = '';
       this.userService.getUser().subscribe({
         next: (res: Member) => {
           this.loggedInUser = res;
@@ -285,6 +287,7 @@ this.filteredUsers = [...this.users];
    * @param member The member to edit.
    */
   editUser(member: Member): void {
+    this.serverError = '';
     this.selectedUser = { ...member }; // Create a copy to avoid direct mutation
     this.editUserForm = {
       id: member.id,
@@ -303,6 +306,12 @@ this.filteredUsers = [...this.users];
    * In a real app, this would send an update request to the backend.
    */
   saveUser(form: NgForm): void {
+
+     if (!this.validPhoneWithLib(this.editUserForm.phoneNumber)) {
+    this.phoneNumberError = 'Please enter a valid phone number.';
+    form.controls['phoneNumber']?.markAsTouched();
+    return;
+  }
     if (form.invalid) {
     // Mark all fields as touched to trigger error messages
     Object.values(form.controls).forEach(control => control.markAsTouched());
@@ -313,8 +322,8 @@ this.filteredUsers = [...this.users];
       this.loading = true;
       // Prepare the data to send to the backend
       const updatedFormPartialData = {
-        name: this.editUserForm.name,
-        phoneNumber: this.editUserForm.phoneNumber,
+        name: this.editUserForm.name.trim(),
+        phoneNumber: this.editUserForm.phoneNumber.trim(),
         roles: [this.editUserForm.role],
         email: this.selectedUser.email, // Keep the original email
         unBlockMember: (this.selectedUser.blocked && !this.editUserForm.blocked) ?? false
@@ -332,7 +341,10 @@ this.filteredUsers = [...this.users];
           this.loading = false;
         },
         error: (err) => {
-          this.error = 'Failed to save user. Please try again.';
+          console.log('Error updating user:', err);
+          console.log(this.showEditModal);
+            this.showEditModal = true;
+          // this.error = err.error?.message || 'Something went wrong'
           this.serverError = err.error?.message || 'Something went wrong';
           this.loading = false;
         }
@@ -374,5 +386,22 @@ this.filteredUsers = [...this.users];
     this.editUserForm = {
       name: '', phoneNumber: '', role: 'USER', blocked: false // Reset blocked as well
     } as any;
+    this.serverError = '';
   }
+
+  validPhoneWithLib(phone: string): boolean {
+  if (!phone) return false;
+
+  try {
+    const parsed = this.phoneUtil.parse(phone, 'IN');
+    return this.phoneUtil.isValidNumberForRegion(parsed, 'IN');
+  } catch (e) {
+    return false;
+  }
+}
+
+onPhoneNumberChange() {
+  const isValid = this.validPhoneWithLib(this.editUserForm.phoneNumber);
+  this.phoneNumberError = isValid ? '' : 'Please enter a valid phone number.';
+}
 }

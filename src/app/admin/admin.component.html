@@ -238,8 +238,8 @@
                 pattern="^[6-9]\d{9}$"
                 #phoneRef="ngModel"
               />
-              <small class="error" *ngIf="phoneRef.invalid && phoneRef.touched">
-                Please Enter a valid phone number
+              <small class="error" *ngIf="phoneRef.invalid && phoneRef.touched || phoneNumberError">
+                {{ phoneNumberError || 'Please Enter a valid phone number' }}
               </small>
             </div>
 
@@ -282,12 +282,12 @@
                 <option [ngValue]="true">BLOCKED</option>
               </select>
             </div>
-            <div class="server-error" *ngIf="serverError">
+            <div class="error" *ngIf="serverError">
       {{ serverError }}
     </div>
 
             <div class="modal-actions">
-              <button type="submit" class="primary-btn">Save Changes</button>
+              <button type="submit" class="primary-btn" [disabled]="!editForm.dirty || editForm.invalid">Save Changes</button>
               <button
                 type="button"
                 class="secondary-btn"

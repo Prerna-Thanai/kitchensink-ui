@@ -28,8 +28,11 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401) {
-          this.router.navigate(['/login']);
+        if (error.status === 401 || error.status === 403) {
+          console.log(error)
+        this.router.navigate(['/login'], {
+            state: { errorMessage: error?.error?.message || 'Unauthorized access' }
+        });
         }
         return throwError(() => error);
       })

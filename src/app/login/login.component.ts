@@ -25,7 +25,18 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
     });
+    const navigation = this.router.getCurrentNavigation();
+    this.loginError = navigation?.extras?.state?.['errorMessage'] || null;
   }
+
+  // errorMessage: string | null = null;
+
+ngOnInit(): void {
+  history.replaceState({}, document.title);
+  // const navigation = this.router.getCurrentNavigation();
+  // console.log('Navigation state:', navigation?.extras?.state);
+  // this.errorMessage = navigation?.extras?.state?.['errorMessage'] || null;
+}
 
   togglePassword() {
     this.showPassword = !this.showPassword;
