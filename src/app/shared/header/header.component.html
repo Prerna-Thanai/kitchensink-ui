@@ -11,7 +11,7 @@
   </ul>
 
   <div class="header-right">
-    <div class="user-name">{{ user?.name | titlecase }}</div>
+    <div class="user-name">{{ user?.name | capitalizeFirstWord }}</div>
     <a href="#" (click)="logout()" title="Logout">
       <i class="fas fa-sign-out-alt text-danger cursor-pointer"></i>
     </a>

@@ -50,6 +50,8 @@ export class AdminComponent implements OnInit {
 
   showEditModal: boolean = false;
   selectedUser: Member | null = null;
+  loggedInUser: Member | null = null;
+   serverError = '';
 
   editUserForm: {
     id?: string;
@@ -65,7 +67,7 @@ export class AdminComponent implements OnInit {
 
 
   // IMPORTANT: Replace with your actual backend base URL
-  private apiUrl = 'http://localhost:8080/api/members';
+  // private apiUrl = 'http://localhost:8080/api/members';
 
   constructor(
     private http: HttpClient,
@@ -74,6 +76,13 @@ export class AdminComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+      this.userService.getUser().subscribe({
+        next: (res: Member) => {
+          this.loggedInUser = res;
+        },
+        error: (err) => {
+        }
+      });
     this.loadUsers();
 this.filteredUsers = [...this.users];
   }
@@ -324,6 +333,7 @@ this.filteredUsers = [...this.users];
         },
         error: (err) => {
           this.error = 'Failed to save user. Please try again.';
+          this.serverError = err.error?.message || 'Something went wrong';
           this.loading = false;
         }
       });

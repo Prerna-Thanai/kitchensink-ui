@@ -10,7 +10,7 @@
     </div>
 
     <div *ngIf="isOpen" class="accordion-content">
-      <p><strong>Name:</strong> {{ userData?.name }}</p>
+      <p><strong>Name:</strong> {{ userData?.name | capitalizeFirstWord}}</p>
       <p><strong>Email:</strong> {{ userData?.email }}</p>
       <p><strong>Phone:</strong> {{ userData?.phoneNumber }}</p>
       <p><strong>Role:</strong> {{ userData?.roles?.[0] }}</p>

@@ -5,13 +5,24 @@
     <div class="controls">
       <div class="search-container">
         <i class="fas fa-search search-icon"></i>
-        <input type="text" [(ngModel)]="searchText" (input)="onSearchChange()" placeholder="Search by name or email"
-          class="search-input" />
+        <input
+          type="text"
+          [(ngModel)]="searchText"
+          (input)="onSearchChange()"
+          placeholder="Search by name or email"
+          class="search-input"
+        />
       </div>
 
-      <select [(ngModel)]="selectedRole" (change)="onRoleFilterChange()" class="role-filter">
+      <select
+        [(ngModel)]="selectedRole"
+        (change)="onRoleFilterChange()"
+        class="role-filter"
+      >
         <option value="">All Roles</option>
-        <option *ngFor="let role of allAvailableRoles" [value]="role">{{ role }}</option>
+        <option *ngFor="let role of allAvailableRoles" [value]="role">
+          {{ role }}
+        </option>
       </select>
     </div>
   </div>
@@ -25,52 +36,106 @@
         <tr>
           <th (click)="sortData('name')" [class.sortable]="true">
             Name
-            <i class="fas fa-sort" [class.fa-sort-up]="sortColumn === 'name' && sortDirection === 'asc'"
-              [class.fa-sort-down]="sortColumn === 'name' && sortDirection === 'desc'"></i>
+            <i
+              class="fas fa-sort"
+              [class.fa-sort-up]="
+                sortColumn === 'name' && sortDirection === 'asc'
+              "
+              [class.fa-sort-down]="
+                sortColumn === 'name' && sortDirection === 'desc'
+              "
+            ></i>
           </th>
           <th (click)="sortData('email')" [class.sortable]="true">
             Email
-            <i class="fas fa-sort" [class.fa-sort-up]="sortColumn === 'email' && sortDirection === 'asc'"
-              [class.fa-sort-down]="sortColumn === 'email' && sortDirection === 'desc'"></i>
+            <i
+              class="fas fa-sort"
+              [class.fa-sort-up]="
+                sortColumn === 'email' && sortDirection === 'asc'
+              "
+              [class.fa-sort-down]="
+                sortColumn === 'email' && sortDirection === 'desc'
+              "
+            ></i>
           </th>
           <th (click)="sortData('phoneNumber')" [class.sortable]="true">
             Phone Number
-            <i class="fas fa-sort" [class.fa-sort-up]="sortColumn === 'phoneNumber' && sortDirection === 'asc'"
-              [class.fa-sort-down]="sortColumn === 'phoneNumber' && sortDirection === 'desc'"></i>
+            <i
+              class="fas fa-sort"
+              [class.fa-sort-up]="
+                sortColumn === 'phoneNumber' && sortDirection === 'asc'
+              "
+              [class.fa-sort-down]="
+                sortColumn === 'phoneNumber' && sortDirection === 'desc'
+              "
+            ></i>
           </th>
           <th (click)="sortData('roles')" [class.sortable]="true">
             Role
-            <i class="fas fa-sort" [class.fa-sort-up]="sortColumn === 'roles' && sortDirection === 'asc'"
-              [class.fa-sort-down]="sortColumn === 'roles' && sortDirection === 'desc'"></i>
+            <i
+              class="fas fa-sort"
+              [class.fa-sort-up]="
+                sortColumn === 'roles' && sortDirection === 'asc'
+              "
+              [class.fa-sort-down]="
+                sortColumn === 'roles' && sortDirection === 'desc'
+              "
+            ></i>
           </th>
           <th (click)="sortData('joiningDate')" [class.sortable]="true">
             Joining Date
-            <i class="fas fa-sort" [class.fa-sort-up]="sortColumn === 'joiningDate' && sortDirection === 'asc'"
-              [class.fa-sort-down]="sortColumn === 'joiningDate' && sortDirection === 'desc'"></i>
+            <i
+              class="fas fa-sort"
+              [class.fa-sort-up]="
+                sortColumn === 'joiningDate' && sortDirection === 'asc'
+              "
+              [class.fa-sort-down]="
+                sortColumn === 'joiningDate' && sortDirection === 'desc'
+              "
+            ></i>
           </th>
           <th (click)="sortData('blocked')" [class.sortable]="true">
             Status
-            <i class="fas fa-sort" [class.fa-sort-up]="sortColumn === 'blocked' && sortDirection === 'asc'"
-              [class.fa-sort-down]="sortColumn === 'blocked' && sortDirection === 'desc'"></i>
+            <i
+              class="fas fa-sort"
+              [class.fa-sort-up]="
+                sortColumn === 'blocked' && sortDirection === 'asc'
+              "
+              [class.fa-sort-down]="
+                sortColumn === 'blocked' && sortDirection === 'desc'
+              "
+            ></i>
           </th>
           <th>Actions</th>
         </tr>
       </thead>
       <tbody *ngIf="filteredUsers.length > 0">
         <tr *ngFor="let member of filteredUsers">
-          <td>{{ member.name }}</td>
+          <td>{{ member.name | capitalizeFirstWord}}</td>
           <td>{{ member.email }}</td>
           <td>{{ member.phoneNumber }}</td>
-          <td>{{ member.roles[0] || 'N/A' }}</td>
+          <td>{{ member.roles[0] || "N/A" }}</td>
           <td>{{ member.joiningDate }}</td>
-          <td [class.status-blocked]="member.blocked" [class.status-unblocked]="!member.blocked">
-            {{ member.blocked ? 'BLOCKED' : 'UNBLOCKED' }}
+          <td
+            [class.status-blocked]="member.blocked"
+            [class.status-unblocked]="!member.blocked"
+          >
+            {{ member.blocked ? "BLOCKED" : "UNBLOCKED" }}
           </td>
           <td class="action-column">
-            <button class="action-btn edit-btn" (click)="editUser(member)" title="Edit User">
+            <button
+              class="action-btn edit-btn"
+              (click)="editUser(member)"
+              title="Edit User"
+            >
               <i class="fas fa-pen"></i>
             </button>
-            <button class="action-btn delete-btn" (click)="deleteUser(member.id)" title="Delete User">
+            <button
+              class="action-btn delete-btn"
+              *ngIf="loggedInUser && loggedInUser.email !== member.email"
+              (click)="deleteUser(member.id)"
+              title="Delete User"
+            >
               <i class="fas fa-trash-alt"></i>
             </button>
           </td>
@@ -78,7 +143,9 @@
       </tbody>
       <tbody *ngIf="filteredUsers.length === 0">
         <tr>
-          <td colspan="7" style="text-align:center;">No users found matching your criteria.</td>
+          <td colspan="7" style="text-align: center">
+            No users found matching your criteria.
+          </td>
         </tr>
       </tbody>
     </table>
@@ -87,7 +154,10 @@
   <div *ngIf="!loading && !error && totalPages > 0" class="pagination-controls">
     <div class="items-per-page">
       Show
-      <select [(ngModel)]="itemsPerPage" (change)="onItemsPerPageChange($event)">
+      <select
+        [(ngModel)]="itemsPerPage"
+        (change)="onItemsPerPageChange($event)"
+      >
         <option value="5">5</option>
         <option value="10">10</option>
         <option value="20">20</option>
@@ -97,52 +167,40 @@
     </div>
 
     <div class="pagination-info">
-      Showing {{ currentPage * itemsPerPage + 1 }} to {{ currentPage * itemsPerPage + filteredUsers.length }} of {{
-      totalItems }} entries
+      Showing {{ currentPage * itemsPerPage + 1 }} to
+      {{ currentPage * itemsPerPage + filteredUsers.length }} of
+      {{ totalItems }} entries
     </div>
 
-    <!-- <div class="pagination-buttons">
-      <button class="page-nav-btn" (click)="goToFirstPage()" [disabled]="currentPage === 0">
-        <i class="fas fa-angle-double-left"></i>
+    <div class="pagination-buttons">
+      <button
+        class="page-nav-btn"
+        (click)="prevPage()"
+        [disabled]="currentPage === 0"
+      >
+        <i class="fas fa-angle-left"></i> Previous
       </button>
-      <button class="page-nav-btn" (click)="prevPage()" [disabled]="currentPage === 0">
-        <i class="fas fa-angle-left"></i>
-      </button>
-
-      <ng-container *ngFor="let page of getPages()">
-        <button class="page-number-btn" [class.active]="page === currentPage" (click)="goToPage(page)">
-          {{ page + 1 }}
-        </button>
-      </ng-container>
-
-      <button class="page-nav-btn" (click)="nextPage()" [disabled]="currentPage === totalPages - 1">
-        <i class="fas fa-angle-right"></i>
-      </button>
-      <button class="page-nav-btn" (click)="goToLastPage()" [disabled]="currentPage === totalPages - 1">
-        <i class="fas fa-angle-double-right"></i>
+      <button
+        class="page-nav-btn"
+        (click)="nextPage()"
+        [disabled]="currentPage === totalPages - 1"
+      >
+        Next <i class="fas fa-angle-right"></i>
       </button>
     </div>
-  </div> -->
 
-  <div class="pagination-buttons">
-  <button class="page-nav-btn" (click)="prevPage()" [disabled]="currentPage === 0">
-    <i class="fas fa-angle-left"></i> Previous
-  </button>
-  <button class="page-nav-btn" (click)="nextPage()" [disabled]="currentPage === totalPages - 1">
-    Next <i class="fas fa-angle-right"></i>
-  </button>
-</div>
-
-  <div *ngIf="showEditModal" class="modal-overlay">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3>Edit User: {{ selectedUser?.name }}</h3>
-        <button class="close-modal-btn" (click)="closeEditModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <form #editForm="ngForm" (ngSubmit)="saveUser(editForm)">
-          <div class="form-group">
-            <label for="editName">Name:</label>
+    <div *ngIf="showEditModal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>Edit User: {{ selectedUser?.name | capitalizeFirstWord  }}</h3>
+          <button class="close-modal-btn" (click)="closeEditModal()">
+            &times;
+          </button>
+        </div>
+        <div class="modal-body">
+          <form #editForm="ngForm" (ngSubmit)="saveUser(editForm)">
+            <div class="form-group">
+              <label for="editName">Name:</label>
               <input
                 type="text"
                 id="editName"
@@ -153,59 +211,94 @@
                 #nameRef="ngModel"
               />
               <small class="error" *ngIf="nameRef.invalid && nameRef.touched">
-                  Name can contain only letters and spaces.
+                Name can contain only letters and spaces.
               </small>
-          </div>
+            </div>
 
-          <div class="form-group">
-            <label for="editEmail">Email:</label>
-            <input type="email" id="editEmail" [(ngModel)]="editUserForm.email" name="email" disabled
-              style="background-color: #f0f0f0; color: #666;" />
-          </div>
-
-          <div class="form-group">
-            <label for="editPhoneNumber">Phone Number:</label>
+            <div class="form-group">
+              <label for="editEmail">Email:</label>
               <input
-              type="text"
-              id="editPhoneNumber"
-              name="phoneNumber"
-              [(ngModel)]="editUserForm.phoneNumber"
-              required
-              pattern="^[6-9]\d{9}$"
-              #phoneRef="ngModel"
-            />
-            <small class="error" *ngIf="phoneRef.invalid && phoneRef.touched">
-              Please Enter a valid phone number
-            </small>
-          </div>
+                type="email"
+                id="editEmail"
+                [(ngModel)]="editUserForm.email"
+                name="email"
+                disabled
+                style="background-color: #f0f0f0; color: #666"
+              />
+            </div>
 
-          <div class="form-group">
-            <label for="editRole">Role:</label>
-            <select id="editRole" [(ngModel)]="editUserForm.role" name="role" required>
-              <option *ngFor="let role of allAvailableRoles" [value]="role">{{ role }}</option>
-            </select>
-          </div>
+            <div class="form-group">
+              <label for="editPhoneNumber">Phone Number:</label>
+              <input
+                type="text"
+                id="editPhoneNumber"
+                name="phoneNumber"
+                [(ngModel)]="editUserForm.phoneNumber"
+                required
+                pattern="^[6-9]\d{9}$"
+                #phoneRef="ngModel"
+              />
+              <small class="error" *ngIf="phoneRef.invalid && phoneRef.touched">
+                Please Enter a valid phone number
+              </small>
+            </div>
 
-          <div class="form-group">
-            <label for="editJoiningDate">Joining Date:</label>
-            <input type="date" id="editJoiningDate" [(ngModel)]="editUserForm.joiningDate" name="joiningDate" disabled
-              style="background-color: #f0f0f0; color: #666;" />
-          </div>
+            <div class="form-group">
+              <label for="editRole">Role:</label>
+              <select
+                id="editRole"
+                [(ngModel)]="editUserForm.role"
+                name="role"
+                required
+              >
+                <option *ngFor="let role of allAvailableRoles" [value]="role">
+                  {{ role }}
+                </option>
+              </select>
+            </div>
 
-          <div class="form-group">
-            <label for="editIsBlocked">Status:</label>
-            <select id="editIsBlocked" [(ngModel)]="editUserForm.blocked" name="blocked"
-              [disabled]="editUserForm.blocked === false" required>
-              <option [ngValue]="false">UNBLOCKED</option>
-              <option [ngValue]="true">BLOCKED</option>
-            </select>
-          </div>
+            <div class="form-group">
+              <label for="editJoiningDate">Joining Date:</label>
+              <input
+                type="date"
+                id="editJoiningDate"
+                [(ngModel)]="editUserForm.joiningDate"
+                name="joiningDate"
+                disabled
+                style="background-color: #f0f0f0; color: #666"
+              />
+            </div>
 
-          <div class="modal-actions">
-            <button type="submit" class="primary-btn">Save Changes</button>
-            <button type="button" class="secondary-btn" (click)="closeEditModal()">Cancel</button>
-          </div>
-        </form>
+            <div class="form-group">
+              <label for="editIsBlocked">Status:</label>
+              <select
+                id="editIsBlocked"
+                [(ngModel)]="editUserForm.blocked"
+                name="blocked"
+                [disabled]="editUserForm.blocked === false"
+                required
+              >
+                <option [ngValue]="false">UNBLOCKED</option>
+                <option [ngValue]="true">BLOCKED</option>
+              </select>
+            </div>
+            <div class="server-error" *ngIf="serverError">
+      {{ serverError }}
+    </div>
+
+            <div class="modal-actions">
+              <button type="submit" class="primary-btn">Save Changes</button>
+              <button
+                type="button"
+                class="secondary-btn"
+                (click)="closeEditModal()"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   </div>
+</div>
