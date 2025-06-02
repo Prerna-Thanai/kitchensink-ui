@@ -20,8 +20,7 @@ import { AuthInterceptor } from './shared/interceptors/auth.interceptor';
   declarations: [
     AppComponent,
     LoginComponent,
-    RegisterComponent,
-    AdminComponent
+    RegisterComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Router, RouterOutlet } from '@angular/router';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { AuthService } from './services/auth.service';
 
 @Component({
@@ -10,5 +10,13 @@ import { AuthService } from './services/auth.service';
 })
 export class AppComponent {
   title = 'kitchensink-ui';
-  constructor(public router: Router) {}
+  showHeader = false;
+
+constructor(private router: Router) {
+  this.router.events.subscribe(event => {
+    if (event instanceof NavigationEnd) {
+      this.showHeader = !['/login', '/register'].includes(event.urlAfterRedirects);
+    }
+  });
+}
 }

@@ -1,34 +1,34 @@
-import { inject } from '@angular/core';
-import { CanActivateFn, Router } from '@angular/router';
-import { catchError, map, of } from 'rxjs';
-import { AuthService } from '../../services/auth.service';
+import { Injectable } from '@angular/core';
+import { CanActivate, Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
-const CACHE_DURATION = 60_000; // 1 minute cache
+@Injectable({ providedIn: 'root' })
+export class AuthGuard implements CanActivate {
+  constructor(private userService: UserService, private router: Router) {}
 
-let lastCheckTime = 0;
-let lastResult = false;
-
-export const authGuard: CanActivateFn = (route, state) => {
-  const authService = inject(AuthService);
-  const router = inject(Router);
-  const now = Date.now();
-
-  if (now - lastCheckTime < CACHE_DURATION && lastResult) {
-    // Return cached result immediately
-    return of(true);
+  canActivate(): Observable<boolean> {
+    return this.userService.getUser().pipe(
+      map(user => {
+        if (user) {
+          return true;
+        }
+        this.router.navigate(['/login'], {
+          state: { errorMessage: 'Please login' },
+        });
+        return false;
+      }),
+      catchError(() => {
+        this.router.navigate(['/login'], {
+          state: { errorMessage: 'Please login' },
+        });
+        return of(false);
+      })
+    );
   }
 
-  return authService.authCheck().pipe(
-    map(() => {
-      lastCheckTime = now;
-      lastResult = true;
-      return true;
-    }),
-    catchError(() => {
-      lastCheckTime = now;
-      lastResult = false;
-      router.navigateByUrl('/login');
-      return of(false);
-    })
-  );
-};
+  canLoad(): Observable<boolean> {
+    return this.canActivate();
+  }
+}
