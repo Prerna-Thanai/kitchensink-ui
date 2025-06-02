@@ -1,6 +1,6 @@
 <div>
   <h1></h1>
   <app-loader></app-loader>
-  <app-header></app-header>
-  <router-outlet></router-outlet>
+<app-header *ngIf="!['/login', '/register'].includes(router.url)"></app-header>
+<router-outlet></router-outlet>
 </div>

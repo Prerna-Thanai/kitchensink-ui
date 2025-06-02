@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from './services/auth.service';
 
 @Component({
@@ -10,4 +10,5 @@ import { AuthService } from './services/auth.service';
 })
 export class AppComponent {
   title = 'kitchensink-ui';
+  constructor(public router: Router) {}
 }
