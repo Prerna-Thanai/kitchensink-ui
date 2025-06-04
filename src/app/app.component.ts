@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { AuthService } from './services/auth.service';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +13,7 @@ export class AppComponent {
   title = 'kitchensink-ui';
   showHeader = false;
 
-constructor(private router: Router) {
+constructor(private router: Router, private spinner: NgxSpinnerService) {
   this.router.events.subscribe(event => {
     if (event instanceof NavigationEnd) {
       this.showHeader = !['/login', '/register'].includes(event.urlAfterRedirects);

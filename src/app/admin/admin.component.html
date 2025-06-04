@@ -1,4 +1,7 @@
-<div class="admin-container">
+<!-- <ngx-spinner></ngx-spinner> -->
+
+<!-- <app-loader *ngIf="loading"></app-loader> -->
+<div *ngIf="!loading" class="admin-container">
   <div class="admin-header">
     <h2>User Management</h2>
     <div class="controls">
@@ -245,8 +248,38 @@
                 {{ phoneNumberError || 'Please Enter a valid phone number' }}
               </small>
             </div>
-
             <div class="form-group">
+  <label for="editRole">Role:</label>
+
+  <!-- Editable dropdown -->
+  <select
+    *ngIf="loggedInUser && loggedInUser.email !== selectedUser?.email"
+    id="editRole"
+    [(ngModel)]="editUserForm.role"
+    name="role"
+    required
+  >
+    <option *ngFor="let role of allAvailableRoles" [value]="role">
+      {{ role }}
+    </option>
+  </select>
+
+  <!-- Non-editable dropdown -->
+  <select
+    *ngIf="loggedInUser && loggedInUser.email === selectedUser?.email"
+    id="editRole"
+    [ngModel]="editUserForm.role"
+    name="role"
+    disabled
+    style="background-color: #f0f0f0; color: #666"
+  >
+    <option *ngFor="let role of allAvailableRoles" [value]="role">
+      {{ role }}
+    </option>
+  </select>
+</div>
+
+            <!-- <div class="form-group">
               <label for="editRole">Role:</label>
               <select
                 id="editRole"
@@ -258,7 +291,7 @@
                   {{ role }}
                 </option>
               </select>
-            </div>
+            </div> -->
 
             <div class="form-group">
               <label for="editJoiningDate">Joining Date:</label>

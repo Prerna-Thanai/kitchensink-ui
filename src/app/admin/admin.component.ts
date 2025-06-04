@@ -7,6 +7,7 @@ import { Member, MemberRole } from '../models/member.model';
 import { UserService } from '../services/user.service';
 import { AbstractControl, NgForm, ValidationErrors } from '@angular/forms';
 import { PhoneNumberUtil } from 'google-libphonenumber';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 // Updated PagedModel interface to precisely match your API response JSON
 export interface PagedModel<T> {
@@ -73,7 +74,8 @@ phoneNumberError: string = '';
   constructor(
     private http: HttpClient,
     private router: Router,
-    private userService: UserService
+    private userService: UserService,
+    private spinner: NgxSpinnerService
   ) { }
 
   ngOnInit(): void {
@@ -91,6 +93,8 @@ this.filteredUsers = [...this.users];
 
   loadUsers(): void {
     this.loading = true;
+    // this.spinner.show();
+    
     this.error = null;
 
     this.getUsersFromApi().subscribe({
@@ -106,10 +110,12 @@ this.filteredUsers = [...this.users];
         this.itemsPerPage = pagedModel.page.size;
 
         this.loading = false;
+        // this.spinner.hide();
       },
       error: (err) => {
         this.error = 'Failed to load users. Please try again.';
         this.loading = false;
+        // this.spinner.hide();
       }
     });
   }

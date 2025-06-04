@@ -1,6 +1,6 @@
 
-
-<div class="dashboard-container">
+<app-loader *ngIf="loading"></app-loader>
+<div *ngIf="!loading" class="dashboard-container">
 
 
   <div class="accordion-card">
