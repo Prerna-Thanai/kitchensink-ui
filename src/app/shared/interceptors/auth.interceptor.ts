@@ -20,7 +20,6 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService, private router: Router) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    console.log( 'AuthInterceptor: Intercepting request', req.url);
     const isSkipped = this.SKIP_URLS.some(url => req.url.includes(url));
     if (isSkipped) {
       return next.handle(req);
@@ -29,7 +28,7 @@ export class AuthInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       catchError((error: HttpErrorResponse) => {
         if (error.status === 401 || error.status === 403) {
-          console.log(error)
+          console.log(error);
         this.router.navigate(['/login'], {
             state: { errorMessage: error?.error?.message || 'Unauthorized access' }
         });

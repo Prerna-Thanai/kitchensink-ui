@@ -90,6 +90,7 @@
             ],
             "styles": [
               "node_modules/@fortawesome/fontawesome-free/css/all.min.css",
+              "node_modules/ngx-spinner/animations/square-jelly-box.css",
               "src/styles/variables.css",
               "src/styles/styles.css"
             ],

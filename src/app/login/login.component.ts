@@ -29,13 +29,9 @@ export class LoginComponent {
     this.loginError = navigation?.extras?.state?.['errorMessage'] || null;
   }
 
-  // errorMessage: string | null = null;
 
 ngOnInit(): void {
   history.replaceState({}, document.title);
-  // const navigation = this.router.getCurrentNavigation();
-  // console.log('Navigation state:', navigation?.extras?.state);
-  // this.errorMessage = navigation?.extras?.state?.['errorMessage'] || null;
 }
 
   togglePassword() {
@@ -58,14 +54,8 @@ ngOnInit(): void {
 
     this.authService.login(loginRequest).subscribe({
     next: (res: TokenResponse) => {
-      // Save expiry timestamps
-      // const now = Date.now();
-      // localStorage.setItem('access_token_expiry_at', (now + res.accessTokenExpiry).toString());
-      // localStorage.setItem('refresh_token_expiry_at', (now + res.refreshTokenExpiry).toString());
 
-      // Save token or user info if needed
-      console.log('Login successful', res);
-        this.router.navigate(['/dashboard']); // Replace with your actual route
+        this.router.navigate(['/dashboard']); 
       },
       error: (err) => {
         console.error('Login failed', err);

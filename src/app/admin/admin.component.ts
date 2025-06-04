@@ -67,9 +67,6 @@ export class AdminComponent implements OnInit {
   private phoneUtil = PhoneNumberUtil.getInstance();
 phoneNumberError: string = '';
 
-  // IMPORTANT: Replace with your actual backend base URL
-  // private apiUrl = 'http://localhost:8080/api/members';
-
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -359,9 +356,7 @@ this.filteredUsers = [...this.users];
         },
         error: (err) => {
           console.log('Error updating user:', err);
-          console.log(this.showEditModal);
             this.showEditModal = true;
-          // this.error = err.error?.message || 'Something went wrong'
           this.serverError = err.error?.message || 'Something went wrong';
           this.loading = false;
         }

@@ -39,7 +39,6 @@ export class AuthService {
   }
 
   validatePhone(phone: string) {
-    console.log('Validating phone number:', phone);
   return this.http.get('https://phonevalidation.abstractapi.com/v1/?api_key='+ this.apiKey + '&phone=' + phone );
 }
 

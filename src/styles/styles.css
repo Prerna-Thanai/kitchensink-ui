@@ -2,7 +2,10 @@
 
 /* Remove any @import statements for SCSS partials or Font Awesome here.
    Font Awesome should be imported via angular.json or a <link> tag in index.html. */
-:root {
+html {
+  overflow-y: scroll;
+}
+   :root {
   --spacing-xl: 24px;
   --spacing-md: 16px;
   --text-dark: #333;

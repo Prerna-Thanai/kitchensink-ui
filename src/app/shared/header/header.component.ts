@@ -28,7 +28,6 @@ constructor(private userService: UserService, private authService: AuthService, 
   logout(){
     this.authService.logout().subscribe({
     next: () => {
-      console.log('Logout successful');
     },
     error: (err) => {
       console.error('Logout failed', err);
