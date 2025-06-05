@@ -7,6 +7,8 @@ import { Member, MemberRole } from '../models/member.model';
 import { UserService } from '../services/user.service';
 import { AbstractControl, NgForm, ValidationErrors } from '@angular/forms';
 import { PhoneNumberUtil } from 'google-libphonenumber';
+import { Subject } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 // Updated PagedModel interface to precisely match your API response JSON
 export interface PagedModel<T> {
@@ -66,6 +68,7 @@ export class AdminComponent implements OnInit {
   allAvailableRoles: MemberRole[] = ['ADMIN', 'USER'];
   private phoneUtil = PhoneNumberUtil.getInstance();
 phoneNumberError: string = '';
+searchChanged = new Subject<string>();
 
   constructor(
     private http: HttpClient,
@@ -82,33 +85,20 @@ phoneNumberError: string = '';
         error: (err) => {
         }
       });
-    this.loadUsers();
+    this.fetchFilteredUsers();
+        this.searchChanged.pipe(debounceTime(300)).subscribe(() => {
+      this.currentPage = 0;
+      this.fetchFilteredUsers();
 this.filteredUsers = [...this.users];
+    });
   }
 
   loadUsers(): void {
     this.loading = true;
     this.error = null;
 
-    this.getUsersFromApi().subscribe({
-      next: (pagedModel: PagedModel<Member>) => {
-        // Assign the content of the current page to users and filteredUsers
-        this.users = pagedModel.content;
-        this.filteredUsers = [...this.users];
+    this.fetchFilteredUsers();
 
-        // Update pagination details from the 'page' object in the response
-        this.totalItems = pagedModel.page.totalElements;
-        this.totalPages = pagedModel.page.totalPages;
-        this.currentPage = pagedModel.page.number;
-        this.itemsPerPage = pagedModel.page.size;
-
-        this.loading = false;
-      },
-      error: (err) => {
-        this.error = 'Failed to load users. Please try again.';
-        this.loading = false;
-      }
-    });
   }
 
   private getUsersFromApi(): Observable<PagedModel<Member>> {
@@ -125,10 +115,12 @@ this.filteredUsers = [...this.users];
     if (this.sortColumn) {
       // Adjust the sort property name if your backend expects a different name for 'roles'
       // e.g., 'roles[0].name' or just 'roles' if it can infer the sort
-      const sortProperty = this.sortColumn === 'roles' ? 'roles' : this.sortColumn;
+      let sortProperty = this.sortColumn === 'roles' ? 'roles' : this.sortColumn;
+      // sortProperty = this.sortColumn === 'joiningDate' ? 'createdAt' : this.sortColumn;
       params = params.append('sort', `${sortProperty},${this.sortDirection}`);
     }
 
+    console.log(params)
     // Make the HTTP GET request to your backend's /all endpoint
     return this.userService.getUsers(params, this.currentPage, this.itemsPerPage);
   }
@@ -230,8 +222,8 @@ this.filteredUsers = [...this.users];
   onSearchChange(): void {
 
       this.currentPage = 0; // Reset to first page on search
-  this.fetchFilteredUsers();
-    
+  // this.fetchFilteredUsers();
+this.searchChanged.next(this.searchText);    
 
   }
 
@@ -254,8 +246,10 @@ this.filteredUsers = [...this.users];
     email: this.searchText || '',
     role: this.selectedRole || '',
     page: this.currentPage,
-    size: this.itemsPerPage
-  }).subscribe({
+    size: this.itemsPerPage,
+    sortBy: this.sortColumn?.trim() ? `${this.sortColumn}` : '',
+    sortDirection: this.sortColumn?.trim() ? `${this.sortDirection}` : 'asc'
+    }).subscribe({
     next: (response: any) => {
         this.totalItems = response.page.totalElements;
         this.totalPages = response.page.totalPages;
@@ -403,6 +397,13 @@ this.filteredUsers = [...this.users];
   if (!phone) return false;
 
   try {
+    const phoneRegex = /^[6-9][0-9]{9}$/;
+      const isBasicValid= phoneRegex.test(phone); // Check basic format
+      if(!isBasicValid){
+        console.log('Invalid phone format');
+        return true;
+      }
+
     const parsed = this.phoneUtil.parse(phone, 'IN');
     return this.phoneUtil.isValidNumberForRegion(parsed, 'IN');
   } catch (e) {

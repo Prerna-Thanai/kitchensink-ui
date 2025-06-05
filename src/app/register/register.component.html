@@ -4,7 +4,7 @@
 
     <div class="form-group">
       <label for="name">Full Name</label>
-      <input id="name" type="text" formControlName="name" placeholder="John Doe" />
+      <input id="name" type="text" maxlength="30" formControlName="name" placeholder="John Doe" />
 
       <!-- Required -->
       <small class="error" *ngIf="registerForm.get('name')?.touched && registerForm.get('name')?.errors?.['required']">
@@ -19,7 +19,7 @@
 
     <div class="form-group">
       <label for="email">Email Address</label>
-      <input id="email" type="email" formControlName="email" placeholder="you@example.com" />
+      <input id="email" type="email" maxlength="320" formControlName="email" placeholder="you@example.com" />
 
       <!-- Required -->
       <small
@@ -42,7 +42,7 @@
 
     <div class="form-group">
       <label for="phone">Phone Number</label>
-      <input id="phone" type="tel" formControlName="phone" placeholder="9876543210" />
+      <input id="phone" type="tel" formControlName="phone" maxlength="13" placeholder="9876543210" />
       <small class="error"
         *ngIf="registerForm.get('phone')?.touched && registerForm.get('phone')?.errors?.['required']">
         Phone number is required.
@@ -60,6 +60,7 @@
       id="password"
       [type]="showPassword ? 'text' : 'password'"
       formControlName="password"
+      maxlength="20"
       placeholder="Create a password"
       class="password-input"
     />
@@ -79,14 +80,14 @@
   <small
     class="error"
     *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['minlength']">
-    Password must be at least 6 characters.
+    Password must be at least 8 characters.
   </small>
 
   <!-- Weak Password Rule -->
   <small
     class="error"
     *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.errors?.['weakPassword']">
-    Password must contain at least 1 uppercase letter, 1 lowercase letter, and 1 special character.
+    Password must contain at least 1 uppercase letter, 1 lowercase letter, and 1 special character, and no spaces allowed.
   </small>
 </div>
 
@@ -94,7 +95,7 @@
     <div class="form-group password-group">
       <label for="confirmPassword">Confirm Password</label>
       <div class="password-wrapper">
-        <input id="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword"
+        <input id="confirmPassword" [type]="showConfirmPassword ? 'text' : 'password'" formControlName="confirmPassword" maxlength="20"
           placeholder="Confirm password" class="password-input" />
         <button type="button" class="toggle-btn" (click)="toggleConfirmPassword()"
           aria-label="Toggle password visibility">

@@ -4,7 +4,7 @@
 
     <div class="form-group">
       <label for="email">Email Address</label>
-      <input id="email" type="email" formControlName="email" placeholder="you@example.com" />
+      <input id="email" type="email" maxlength="320" formControlName="email" placeholder="you@example.com" />
       <small class="error" *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid">
         Please enter a valid email.
       </small>
@@ -17,6 +17,7 @@
           id="password"
           [type]="showPassword ? 'text' : 'password'"
           formControlName="password"
+          maxlength="20"
           placeholder="Enter your password"
         />
         <button type="button" class="toggle-btn" (click)="togglePassword()" aria-label="Toggle Password Visibility">

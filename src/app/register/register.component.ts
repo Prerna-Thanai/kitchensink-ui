@@ -45,7 +45,7 @@ export class RegisterComponent {
   if (!name) return null;
 
   // Match only letters (a-z, A-Z) and spaces
-  const nameRegex = /^[A-Za-z\s]+$/;
+  const nameRegex = /^[A-Za-z]+(?: [A-Za-z]+)*$/;
 
   return nameRegex.test(name) ? null : { invalidFullName: true };
 }
@@ -55,40 +55,34 @@ export class RegisterComponent {
     if (!phone) return null;
 
     try {
+      const phoneRegex = /^[6-9][0-9]{9}$/;
+      const isBasicValid= phoneRegex.test(phone); // Check basic format
+
+      if(!isBasicValid){
+        console.log('Invalid phone format');
+        return { invalidPhone: true };
+      }
       const parsed = this.phoneUtil.parse(phone, 'IN');
       const isValid = this.phoneUtil.isValidNumberForRegion(parsed, 'IN');
+      console.log(isValid);
       return isValid ? null : { invalidPhone: true };
     } catch (e) {
       return { invalidPhone: true };
     }
   }
   
-  validatePhoneAsync(): AsyncValidatorFn {
-    return (_control: AbstractControl): Observable<ValidationErrors | null> => {
-    return of(null); // always valid
-  };
+//   validatePhoneAsync(): AsyncValidatorFn {
+//     return (_control: AbstractControl): Observable<ValidationErrors | null> => {
+//     return of(null); // always valid
+//   };
 
-  //Note disabled currently, but it is working
-  // return (control: AbstractControl): Observable<ValidationErrors | null> => {
-  //   if (!control.value) {
-  //     return of(null); // skip validation if empty
-  //   }
-
-  //   return this.authService.validatePhone(control.value).pipe(
-  //     map((response: any) => {
-  //       return response.valid ? null : { invalidPhone: true };
-  //     }),
-  //     catchError(() => of({ invalidPhone: true })) // API/network failure = invalid
-  //   );
-  // };
-}
+// }
 
   strongPasswordValidator(control: AbstractControl): ValidationErrors | null {
   const value = control.value;
   if (!value) return null;
 
-  const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?])/;
-
+const pattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
   return pattern.test(value)
     ? null
     : { weakPassword: true };

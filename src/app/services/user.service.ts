@@ -64,12 +64,22 @@ updateMember(memberId: string, updatedFormPartial: {
   role?: string;
   page?: number;
   size?: number;
+  sortBy?: string;
+  sortDirection?: string;
   showInactiveMembers?: boolean;
 }): Observable<any> {
+
+  let sortColumn = params.sortBy || 'id';
+
+  if (sortColumn === 'joiningDate') {
+    sortColumn = 'createdAt';
+  }
+
   let httpParams = new HttpParams()
     .set('page', params.page?.toString() || '0')
     .set('size', params.size?.toString() || '10')
-    .set('showInactiveMembers', params.showInactiveMembers?.toString() || 'false');
+    .set('showInactiveMembers', params.showInactiveMembers?.toString() || 'false')
+    .set('sort', `${sortColumn},${params.sortDirection}`);
 
   // Prepare the request body
   const body: any = {};

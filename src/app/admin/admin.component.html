@@ -209,9 +209,10 @@
                 type="text"
                 id="editName"
                 name="name"
+                maxlength="30"
                 [(ngModel)]="editUserForm.name"
                 required
-                pattern="^[A-Za-z\s]+$"
+                pattern="^[A-Za-z]+(?: [A-Za-z]+)*$"
                 #nameRef="ngModel"
               />
               <small class="error" *ngIf="nameRef.invalid && nameRef.touched">
@@ -237,6 +238,7 @@
                 type="text"
                 id="editPhoneNumber"
                 name="phoneNumber"
+                maxlength="13"
                 [(ngModel)]="editUserForm.phoneNumber"
                 required
                 pattern="^[6-9]\d{9}$"
@@ -292,13 +294,22 @@
 
             <div class="form-group">
               <label for="editIsBlocked">Status:</label>
-              <select
+                <select *ngIf="loggedInUser && loggedInUser.email !== selectedUser?.email && selectedUser?.blocked === true" 
                 id="editIsBlocked"
                 [(ngModel)]="editUserForm.blocked"
                 name="blocked"
-                [disabled]="editUserForm.blocked === false"
-                required
-              >
+                required>
+                <option [ngValue]="false">UNBLOCKED</option>
+                <option [ngValue]="true">BLOCKED</option>
+              </select>
+
+              <select *ngIf="loggedInUser && loggedInUser.email === selectedUser?.email || selectedUser?.blocked !== true" 
+                id="editIsBlocked"
+                [(ngModel)]="editUserForm.blocked"
+                name="blocked"
+                disabled
+    style="background-color: #f0f0f0; color: #666"
+                required>
                 <option [ngValue]="false">UNBLOCKED</option>
                 <option [ngValue]="true">BLOCKED</option>
               </select>
