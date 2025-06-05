@@ -85,11 +85,12 @@ searchChanged = new Subject<string>();
         error: (err) => {
         }
       });
-    this.fetchFilteredUsers();
+    this.loadUsers();
+      this.filteredUsers = [...this.users];
         this.searchChanged.pipe(debounceTime(300)).subscribe(() => {
       this.currentPage = 0;
-      this.fetchFilteredUsers();
-this.filteredUsers = [...this.users];
+      this.loadUsers();
+      this.filteredUsers = [...this.users];
     });
   }
 
@@ -120,7 +121,6 @@ this.filteredUsers = [...this.users];
       params = params.append('sort', `${sortProperty},${this.sortDirection}`);
     }
 
-    console.log(params)
     // Make the HTTP GET request to your backend's /all endpoint
     return this.userService.getUsers(params, this.currentPage, this.itemsPerPage);
   }
@@ -255,8 +255,11 @@ this.searchChanged.next(this.searchText);
         this.totalPages = response.page.totalPages;
         this.itemsPerPage = response.page.size;
         this.currentPage = response.page.number;
+        this.users = response.content;
         this.filteredUsers = response.content;
       this.loading = false;
+
+      
     },
     error: (err: any) => {
       this.error = 'Failed to load users';
